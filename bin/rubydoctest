@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+USAGE = "USAGE: rdoctest [ --trace ] [ --debugger ] <path>"
+
+SUFFIX = "rdoctest"
+
+file = ARGV.pop or (puts USAGE; exit 1)
+
+requires = ['rubygems', File.dirname(__FILE__) + "/rubydoctest"]
+requires << 'ruby-debug' if ARGV.include?("--debugger")
+
+command = if ARGV.include?("--rcov")
+            args = (ARGV - ["--rcov"]).map { |a| %("#{a}") }.join(' ')
+            "rcov -x /gems/,rdoctest"
+          else
+            "ruby"
+          end
+trace = "RubyDocTest.trace = true;" if ARGV.include?("--trace")
+
+requires = requires.map {|lib| "require '#{lib}'; "}.join
+
+puts "<html><body><pre>" if ARGV.include?("--html")
+
+files = if File.directory?(file)
+          Dir["#{file}/**/*.#{SUFFIX}"]
+        else
+          [file]
+        end
+
+files.reverse_each do |f|
+  puts  "*** " + f.sub("#{file}/", "").sub(".#{SUFFIX}", ""), "" if files.length > 1
+  system %(#{command} -e "#{requires} #{trace} RubyDocTest.new(File.read('#{f}')).run")
+end
+
+puts "</pre></body></html>" if ARGV.include?("--html")
