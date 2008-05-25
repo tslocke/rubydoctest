@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-USAGE = "USAGE: rdoctest [ --trace ] [ --debugger ] <path>"
+USAGE = "USAGE: rdoctest [ --html ] [ --trace ] [ --debugger ] <path>"
 
-SUFFIX = "rdoctest"
+SUFFIX = "{r,}doctest"
 
 file = ARGV.pop or (puts USAGE; exit 1)
 

@@ -1,6 +1,6 @@
 Underpinning the RubyDocTest framework is a RubyDocTest::Runner singleton.
 
-	>> require 'rubydoctest'
+	>> require File.dirname(__FILE__) + "/../../lib/rubydoctest"
 	>> runner = RubyDocTest::Runner.instance
 	>> runner.class
 	=> RubyDocTest::Runner
