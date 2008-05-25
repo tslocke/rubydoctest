@@ -1,8 +1,8 @@
 require 'rubydoctest/version'
 
-AUTHOR = 'FIXME full name'  # can also be an array of Authors
-EMAIL = "FIXME email"
-DESCRIPTION = "description of gem"
+AUTHOR = ['Tom Locke', 'Dr Nic Williams']  # can also be an array of Authors
+EMAIL = "drnicwilliams@gmail.com"
+DESCRIPTION = "Ruby version of Python's doctest tool, but a bit different."
 GEM_NAME = 'rubydoctest' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'rubydoctest' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"

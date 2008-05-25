@@ -1,7 +1,7 @@
 
-For more information on rubydoctest, see http://rubydoctest.rubyforge.org
-
-NOTE: Change this information in PostInstall.txt 
-You can also delete it if you don't want it.
+rubydoctest comes as an executable that takes a file or directory:
+	
+  rubydoctest .
+	rubydoctest simple.doctest
 
 
