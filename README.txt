@@ -56,8 +56,6 @@ Here is an example doctest file (say called simple.doctest):
 		?> 2
 		=> 3
 
-
-
 == INSTALL:
 
 Major releases:
@@ -69,6 +67,10 @@ Build from source:
 	git clone git://github.com/tablatom/rubydoctest.git
 	cd rubydoctest
 	rake manifest && rake install
+
+== TEXTMATE BUNDLE:
+	
+See http://github.com/drnic/ruby-doctest-tmbundle
 
 == LICENSE:
 
