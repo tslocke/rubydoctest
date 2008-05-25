@@ -15,12 +15,13 @@ class RubyDocTest
   
   CODE_LINE_RX = /^(    |\t)/
   
-  def initialize(src)
+  def initialize(src, file_name)
     @passed = 0
     @block_count = 0
     @failures = []
     @src_lines = src.split("\n")
     @line_num = 0
+    @file_name = file_name
     
     next_line # get first line
   end
@@ -220,6 +221,8 @@ class RubyDocTest
   
   
   def evaluate(statement, line_num)
+    statement.gsub!("__FILE__", @file_name.inspect)
+    puts statement
     eval(statement, environment, __FILE__, __LINE__)
   rescue SyntaxError => e
     puts "Syntax error in statement on line #{line_num}:"

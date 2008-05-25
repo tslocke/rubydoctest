@@ -29,7 +29,7 @@ files = if File.directory?(file)
 
 files.reverse_each do |f|
   puts  "*** " + f.sub("#{file}/", "").sub(".#{SUFFIX}", ""), "" if files.length > 1
-  system %(#{command} -e "#{requires} #{trace} RubyDocTest.new(File.read('#{f}')).run")
+  system %(#{command} -e "#{requires} #{trace} RubyDocTest.new(File.read('#{f}'), '#{f}').run")
 end
 
 puts "</pre></body></html>" if ARGV.include?("--html")
