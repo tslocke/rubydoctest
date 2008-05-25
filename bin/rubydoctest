@@ -6,7 +6,7 @@ SUFFIX = "rdoctest"
 
 file = ARGV.pop or (puts USAGE; exit 1)
 
-requires = ['rubygems', File.dirname(__FILE__) + "/rubydoctest"]
+requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if ARGV.include?("--debugger")
 
 command = if ARGV.include?("--rcov")

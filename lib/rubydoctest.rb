@@ -230,6 +230,7 @@ class RubyDocTest
   rescue Exception => e
     puts "Exception in statement on line #{line_num}:"
     puts indent(statement)
+    puts e.backtrace
     
     if RubyDocTest.trace
       raise
