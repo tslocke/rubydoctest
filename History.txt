@@ -1,3 +1,9 @@
+== 0.2.0 2008-05-25
+
+* Initial changes by Dr Nic
+* __FILE__ is changed to the explicit file path (since it was eval'ing to the code, not the test file)
+* Starting to write doctests for the project itself
+
 == 0.1.0 2008-05-25
 
 * 1 major enhancement:
