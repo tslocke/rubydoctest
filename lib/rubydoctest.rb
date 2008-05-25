@@ -222,7 +222,6 @@ class RubyDocTest
   
   def evaluate(statement, line_num)
     statement.gsub!("__FILE__", @file_name.inspect)
-    puts statement
     eval(statement, environment, __FILE__, __LINE__)
   rescue SyntaxError => e
     puts "Syntax error in statement on line #{line_num}:"
