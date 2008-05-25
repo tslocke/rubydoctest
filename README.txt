@@ -17,6 +17,47 @@ rubydoctest comes as an executable that takes a file or directory:
   rubydoctest .
 	rubydoctest simple.doctest
 
+== EXAMPLE:
+	
+Here is an example doctest file (say called simple.doctest):
+	
+	# Simple test of RubyDocTest
+
+	This is an example test
+
+		>> 1 + 2
+		=> 3
+
+	And here's a test that will fail
+
+		>> 1 + 2
+		=> 4
+
+	Test a some multiline statements
+
+		>> 
+			class Person
+				attr_accessor :name
+			end
+
+		>> Person
+		=> Person
+		>> p = Person.new
+		>> p.name = "Tom"
+		>> p.name
+		=> "Tom"
+
+
+		>> "a
+		b"
+		=> "a\nb"
+
+		>> 1 +
+		?> 2
+		=> 3
+
+
+
 == INSTALL:
 
 Major releases:
