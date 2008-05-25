@@ -1,4 +1,9 @@
 namespace :test do
+  desc "Run doctests"
+  task :doctest do
+    sh "ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../test/doctest"
+  end
+  
   namespace :doctest do
     desc "Run rstakeout on test/doctest files"
     task :auto do
