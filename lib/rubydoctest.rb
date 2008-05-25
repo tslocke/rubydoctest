@@ -23,7 +23,7 @@ class RubyDocTest
     @line_num = 0
     @file_name = file_name
     
-    next_line # get first line
+    # next_line # get first line
   end
   
   def run
@@ -88,7 +88,7 @@ class RubyDocTest
   end
   
   def run_file
-    run_code_block if code_block_start?
+    # run_code_block if code_block_start?
     while next_line
       run_code_block if code_block_start?
     end

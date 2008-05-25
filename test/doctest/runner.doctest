@@ -1,9 +1,6 @@
-Underpinning the RubyDocTest framework is a RubyDocTest::Runner singleton.
+Underpinning the RubyDocTest framework is a RubyDocTest::Runner instance.
 
 	>> require File.dirname(__FILE__) + "/../../lib/rubydoctest"
-	>> runner = RubyDocTest::Runner.instance
-	>> runner.class
-	=> RubyDocTest::Runner
 
 The Runner parses the contents of *.doctest files under test, specifically it is 
 passed a String, in RubyDocTest format (a superset of Markdown format), runs
@@ -13,4 +10,5 @@ The aggregated results are returned for inspection and display to the user.
 
 The base case is to evaluate an empty string which should not fail.
 
-	>> runner.run ""
+	>> runner = RubyDocTest.new("", __FILE__)
+	>> runner.run_file

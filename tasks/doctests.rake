@@ -3,7 +3,7 @@ namespace :test do
     desc "Run rstakeout on test/doctest files"
     task :auto do
       tests = "#{File.dirname(__FILE__)}/../test/doctest/*"
-      tests_path = File.expand_path(File.dirname(tests))
+      tests_path = File.dirname(tests)
       files = "#{File.dirname(__FILE__)}/../lib/*.rb #{File.dirname(__FILE__)}/../bin/*"
       sh "rstakeout 'rake test:doctest:changed DOCTESTS=#{tests_path}' #{tests} #{files} --pass-as-env"
     end
