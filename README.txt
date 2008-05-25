@@ -1,10 +1,10 @@
 = rubydoctest
 
-* FIX (url)
+* http://github.com/tablatom/rubydoctest
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Ruby version of Python's doctest tool, but a bit different.
 
 == FEATURES/PROBLEMS:
 
@@ -12,15 +12,22 @@ FIX (describe your package)
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
-
-== REQUIREMENTS:
-
-* FIX (list of requirements)
+rubydoctest comes as an executable that takes a file or directory:
+	
+  rubydoctest .
+	rubydoctest simple.doctest
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+Major releases:
+
+	sudo gem install rubydoctest
+
+Build from source:
+
+	git clone git://github.com/tablatom/rubydoctest.git
+	cd rubydoctest
+	rake manifest && rake install
 
 == LICENSE:
 
