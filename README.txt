@@ -68,6 +68,17 @@ Build from source:
 	cd rubydoctest
 	rake manifest && rake install
 
+== SELF-DOCTESTING:
+	
+Ruby DocTest uses itself to test and document itself.
+
+	rake test:doctest
+	
+In development of Ruby DocTest, there is an autotest system in-built
+using script/rstakeout
+
+	rake test:doctest:auto
+
 == TEXTMATE BUNDLE:
 	
 See http://github.com/drnic/ruby-doctest-tmbundle
