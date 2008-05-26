@@ -1,3 +1,7 @@
+== 0.2.1 2008-05-26
+
+* Adding self-doctesting doctests
+
 == 0.2.0 2008-05-25
 
 * Initial changes by Dr Nic

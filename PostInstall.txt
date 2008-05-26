@@ -1,7 +1,8 @@
 
 rubydoctest comes as an executable that takes a file or directory:
 	
-  rubydoctest .
+	rubydoctest .
+	rubydoctest some/path/to/tests
 	rubydoctest simple.doctest
 
 
