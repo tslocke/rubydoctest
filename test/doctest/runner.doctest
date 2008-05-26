@@ -12,3 +12,42 @@ The base case is to evaluate an empty string which should not fail.
 
 	>> runner = RubyDocTest.new("", __FILE__)
 	>> runner.run_file
+	
+You should also be able to evaluate any Markdown document without failure.
+
+	>> 
+		RubyDocTest.new(<<-MARKDOWN, __FILE__).run_file
+	This is a markdown document.
+	
+		class Person
+		end
+	
+	No special DocTest code in this document	
+		MARKDOWN
+		
+The excitement starts when the document under test includes `>>` sections 
+containing Ruby code:
+
+	>> 
+		RubyDocTest.new(<<-MARKDOWN, __FILE__).run_file
+	This is a doctest document.
+
+		>> class Dog; end
+		>> dog = Dog.new
+		>> dog.class
+		=> Dog
+
+	The above contains several expression, and one test: `dog.class == Dog`
+		MARKDOWN
+	
+You can also include code and tests that currently fail:
+
+	>> 
+		RubyDocTest.new(<<-MARKDOWN, __FILE__).run_file
+	Watch out for bad maths:
+
+		>> 1 + 1
+		=> 3
+
+	MARKDOWN
+
