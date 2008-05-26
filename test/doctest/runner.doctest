@@ -16,7 +16,7 @@ The base case is to evaluate an empty string which should not fail.
 You should also be able to evaluate any Markdown document without failure.
 
 	>> 
-		RubyDocTest.new(<<-MARKDOWN, __FILE__).run_file
+		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
 	This is a markdown document.
 	
 		class Person
@@ -24,12 +24,14 @@ You should also be able to evaluate any Markdown document without failure.
 	
 	No special DocTest code in this document	
 		MARKDOWN
+	>> runner.run_file
+	=> true
 		
 The excitement starts when the document under test includes `>>` sections 
 containing Ruby code:
 
 	>> 
-		RubyDocTest.new(<<-MARKDOWN, __FILE__).run_file
+		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
 	This is a doctest document.
 
 		>> class Dog; end
@@ -39,15 +41,18 @@ containing Ruby code:
 
 	The above contains several expression, and one test: `dog.class == Dog`
 		MARKDOWN
+	>> runner.run_file
+	=> true
 	
 You can also include code and tests that currently fail:
 
 	>> 
-		RubyDocTest.new(<<-MARKDOWN, __FILE__).run_file
+		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
 	Watch out for bad maths:
 
 		>> 1 + 1
 		=> 3
 
 	MARKDOWN
-
+	>> runner.run_file
+	=> false

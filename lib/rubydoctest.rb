@@ -92,6 +92,7 @@ class RubyDocTest
     while next_line
       run_code_block if code_block_start?
     end
+    failures.length == 0
   end
   
   def unindent_code_line(s=current_line)
