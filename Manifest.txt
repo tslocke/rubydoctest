@@ -7,7 +7,6 @@ Rakefile
 bin/rubydoctest
 config/hoe.rb
 config/requirements.rb
-foo.html
 lib/assets/stylesheets/doctest.css
 lib/rubydoctest.rb
 lib/rubydoctest/version.rb
