@@ -31,7 +31,9 @@ class RubyDocTest
     inline_errors = options[:inline_errors]
     run_file
     if inline_errors
-      src
+      puts %Q{<div id="rubydoctest-summary" class="#{failures.size > 0 ? 'fail' : 'pass'}">}
+      print_report
+      puts "</div>\n#{src}"
     else
       print_report
     end
