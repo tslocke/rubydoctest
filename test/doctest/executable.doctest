@@ -1,0 +1,27 @@
+The executable can return plain text output summarizing the results:
+
+	>> `ruby #{File.dirname(__FILE__)}/../../bin/rubydoctest #{File.dirname(__FILE__)}/file_relative.doctest`
+	=> "1 blocks, 1 tests (avg. 1.0/block), 0 failures\n\n"
+
+The executable can return HTML text output with the summary prepended to the original contents, and converted to HTML via BlueCloth:
+
+	>> actual = `ruby #{File.dirname(__FILE__)}/../../bin/rubydoctest --html #{File.dirname(__FILE__)}/file_relative.doctest`
+	>> expected = <<-EOS
+	<html>
+	<head><link rel='stylesheet' href='file://#{File.expand_path(File.dirname(__FILE__)) + '/lib/assets/stylesheets/rubydoctest.css'}'></head>
+	<body>
+	<div id="rubydoctest-summary" class="pass">
+	1 blocks, 1 tests (avg. 1.0/block), 0 failures
+	</div>
+	<pre>
+	Its important that __FILE__ evaluates to the *.doctest file than anything else
+
+		>> !!(__FILE__ =~ %r{file_relative.doctest\Z})
+		=> true
+	
+	</pre>
+	</body></html>
+	EOS
+	>> (expected == actual) || actual
+	=> true
+

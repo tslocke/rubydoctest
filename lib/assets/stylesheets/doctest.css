@@ -1,0 +1,9 @@
+#rubydoctest-summary {
+	background-color: #DDD;
+	border: 1px solid #999;
+}
+
+pre {
+	background-color: black;
+	color: white;
+}

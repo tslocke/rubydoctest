@@ -19,17 +19,29 @@ trace = "RubyDocTest.trace = true;" if ARGV.include?("--trace")
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 
-puts "<html><body><pre>" if ARGV.include?("--html")
-
 files = if File.directory?(file)
           Dir["#{file}/**/*.#{SUFFIX}"]
         else
           [file]
         end
-
-files.reverse_each do |f|
-  puts  "*** " + f.sub("#{file}/", "").sub(".#{SUFFIX}", ""), "" if files.length > 1
-  system %(#{command} -e "#{requires} #{trace} RubyDocTest.new(File.read('#{f}'), '#{f}').run")
+if ARGV.include?("--html")
+  puts "<html>"
+  puts "<head><link rel='stylesheet' href='file://#{File.expand_path(File.dirname(__FILE__) + '/../lib/assets/stylesheets/doctest.css')}'></head>"
+  puts "<body>"
+  f = files.first # TODO support multiple files in html format
+  cmd = %Q{#{command} -e "#{requires} #{trace} RubyDocTest.new(File.read('#{f}'), '#{f}').run(:inline_errors => true)"}
+  output = `#{cmd}`
+  begin
+    require "rubygems"
+    require 'BlueCloth'
+    puts BlueCloth.new(output).to_html
+  rescue LoadError
+    puts output
+  end
+  puts "</body></html>"
+else
+  files.reverse_each do |f|
+    puts  "# " + f.sub("#{file}/", "").sub(".#{SUFFIX}", ""), "" if files.length > 1
+    system %(#{command} -e "#{requires} #{trace} RubyDocTest.new(File.read('#{f}'), '#{f}').run")
+  end
 end
-
-puts "</pre></body></html>" if ARGV.include?("--html")
