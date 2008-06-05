@@ -1,0 +1,91 @@
+It is possible for the runner to output the original doctest string, with the test results embedded. The success/fail summary is attached to the top of the file, and if an assertion fails then the failure message is inserted into the document.
+
+With the error information inserted into the markdown-formatted document, the resulting document is also markdown format and can be immediately converted to HTML for displaying.
+
+Underpinning the RubyDocTest framework is a RubyDocTest::Runner instance.
+
+	>> require File.dirname(__FILE__) + "/../../lib/rubydoctest"
+
+The Runner parses the contents of *.doctest files under test, specifically it is 
+passed a String, in RubyDocTest format (a superset of Markdown format), runs
+the inline Ruby code and compares it to any "=> expected" results.
+
+The aggregated results are returned for inspection and display to the user.
+
+The base case is to evaluate an empty string which should not fail.
+
+	>> runner = RubyDocTest.new("", __FILE__)
+	>> runner.run(:inline_errors => true)
+	=> ""
+	
+You should also be able to evaluate any Markdown document without failure.
+
+	>> 
+		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
+	This is a markdown document.
+	
+		class Person
+		end
+	
+	No special DocTest code in this document	
+		MARKDOWN
+	>> actual = runner.run(:inline_errors => true)
+	>> expected = <<-RESULT
+	This is a markdown document.
+	
+		class Person
+		end
+	
+	No special DocTest code in this document	
+		RESULT
+	>> actual == expected
+	=> true
+	
+The excitement starts when the document under test includes `>>` sections 
+containing Ruby code:
+
+	>> 
+		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
+	This is a doctest document.
+
+		>> class Dog; end
+		>> dog = Dog.new
+		>> dog.class
+		=> Dog
+
+	The above contains several expression, and one test: `dog.class == Dog`
+		MARKDOWN
+	>> actual = runner.run(:inline_errors => true)
+	>> expected = <<-RESULT
+	This is a doctest document.
+
+		>> class Dog; end
+		>> dog = Dog.new
+		>> dog.class
+		=> Dog
+
+	The above contains several expression, and one test: `dog.class == Dog`
+		RESULT
+	>> actual == expected
+	=> true
+	
+You can also include code and tests that currently fail:
+
+	>> 
+		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
+	Watch out for bad maths:
+
+		>> 1 + 1
+		=> 3
+
+	MARKDOWN
+	>> actual = runner.run(:inline_errors => true)
+	>> expected = <<-RESULT
+	Watch out for bad maths:
+
+		>> 1 + 1
+		=> 3
+
+		RESULT
+	>> actual == expected
+	=> true

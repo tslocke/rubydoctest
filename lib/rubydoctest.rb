@@ -19,19 +19,25 @@ class RubyDocTest
     @passed = 0
     @block_count = 0
     @failures = []
-    @src_lines = src.split("\n")
+    @src = src
+    @remaining_src_lines = src.split("\n")
     @line_num = 0
     @file_name = file_name
     
     # next_line # get first line
   end
   
-  def run
+  def run(options = {})
+    inline_errors = options[:inline_errors]
     run_file
-    print_report
+    if inline_errors
+      src
+    else
+      print_report
+    end
   end
   
-  attr_accessor :passed, :failures, :current_line, :src_lines, :line_num, :block_count
+  attr_accessor :passed, :failures, :current_line, :src, :remaining_src_lines, :line_num, :block_count
   
   def environment
     TOPLEVEL_BINDING
@@ -39,11 +45,11 @@ class RubyDocTest
   
   def next_line
     @line_num += 1
-    @current_line = src_lines.shift
+    @current_line = remaining_src_lines.shift
   end
   
   def next_line?
-    src_lines.any?
+    remaining_src_lines.any?
   end
   
   def strip_prompt(s)
