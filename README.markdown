@@ -1,23 +1,19 @@
-= rubydoctest
+# rubydoctest
 
 * http://github.com/tablatom/rubydoctest
 
-== DESCRIPTION:
+## Description:
 
 Ruby version of Python's doctest tool, but a bit different.
 
-== FEATURES/PROBLEMS:
-
-* FIX (list of features or problems)
-
-== SYNOPSIS:
+## Synopsis:
 
 rubydoctest comes as an executable that takes a file or directory:
 	
   rubydoctest .
 	rubydoctest simple.doctest
 
-== EXAMPLE:
+## Example:
 	
 Here is an example doctest file (say called simple.doctest):
 	
@@ -56,7 +52,7 @@ Here is an example doctest file (say called simple.doctest):
 		?> 2
 		=> 3
 
-== INSTALL:
+## Installation:
 
 Major releases:
 
@@ -68,7 +64,7 @@ Build from source:
 	cd rubydoctest
 	rake manifest && rake install
 
-== SELF-DOCTESTING:
+## Testing DocTest:
 	
 Ruby DocTest uses itself to test and document itself.
 
@@ -79,11 +75,11 @@ using script/rstakeout
 
 	rake test:doctest:auto
 
-== TEXTMATE BUNDLE:
+## TextMate Bundle:
 	
 See http://github.com/drnic/ruby-doctest-tmbundle
 
-== LICENSE:
+## License:
 
 (The MIT License)
 
