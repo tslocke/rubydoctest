@@ -15,8 +15,7 @@ The base case is to evaluate an empty string which should not fail.
 	
 You should also be able to evaluate any Markdown document without failure.
 
-	>> 
-		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
+	>> runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
 	This is a markdown document.
 	
 		class Person
@@ -30,8 +29,7 @@ You should also be able to evaluate any Markdown document without failure.
 The excitement starts when the document under test includes `>>` sections 
 containing Ruby code:
 
-	>> 
-		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
+	>> runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
 	This is a doctest document.
 
 		>> class Dog; end
@@ -46,8 +44,7 @@ containing Ruby code:
 	
 You can also include code and tests that currently fail:
 
-	>> 
-		runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
+	>> runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
 	Watch out for bad maths:
 
 		>> 1 + 1
@@ -56,3 +53,16 @@ You can also include code and tests that currently fail:
 	MARKDOWN
 	>> runner.run_file
 	=> false
+
+And last, but not least, you can run ruby files (ending in .rb) through doctest as well:
+
+	>> runner = RubyDocTest.new(<<-MARKDOWN, "testme.rb")
+	# This code should add 5 and 5
+	# >> five_and_five
+	# => 10
+	def five_and_five
+		5 + 5
+	end
+	MARKDOWN
+	>> runner.run_file
+	=> true

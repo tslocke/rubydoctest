@@ -2,28 +2,38 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 require 'irb'
+require 'yaml'
 
 class RubyDocTest
   
   class << self
     attr_accessor :trace
   end
+  
+  RX = {
+    :rb => {
+      :prompt    => /^# [>?]>( |\s*$)/,
+      :result    => /^\s*#\s*=> /,
+      :code_line => /^\s*#(\s?[>?=]>|\s\s+|\t)/,
+      :indent    => /^\s+/
+    },
+    :doctest => {
+      :prompt    => /^[>?]>( |\s*$)/,
+      :result    => /^=> /,
+      :code_line => /^(    |\t)/,
+      :indent    => /^(    |\t)/
+    }
+  }
 
-  PROMPT_RX = /^[>?]>( |\s*$)/
-  
-  RESULT_RX = /^=> /
-  
-  CODE_LINE_RX = /^(    |\t)/
-  
   def initialize(src, file_name)
     @passed = 0
     @block_count = 0
     @failures = []
+    @src = src
     @src_lines = src.split("\n")
     @line_num = 0
     @file_name = file_name
-    
-    # next_line # get first line
+    @file_type = File.extname(file_name) == ".rb" ? :rb : :doctest
   end
   
   def run
@@ -32,6 +42,10 @@ class RubyDocTest
   end
   
   attr_accessor :passed, :failures, :current_line, :src_lines, :line_num, :block_count
+  
+  def rx
+    RX[@file_type]
+  end
   
   def environment
     TOPLEVEL_BINDING
@@ -47,11 +61,11 @@ class RubyDocTest
   end
   
   def strip_prompt(s)
-    s.sub(PROMPT_RX, "")
+    s.sub(rx[:prompt], "")
   end
 
   def result_start?(s=current_line)
-    s =~ RESULT_RX
+    s =~ rx[:result]
   end
   
   def string_result_start?(s=current_line)
@@ -59,11 +73,11 @@ class RubyDocTest
   end
   
   def statement_start?(s=current_line)
-    s =~ PROMPT_RX
+    s =~ rx[:prompt]
   end
   
   def strip_result_marker(s=current_line)
-    s.sub(RESULT_RX, "")
+    s.sub(rx[:result], "")
   end
   
   def normalize_result(s)
@@ -71,7 +85,11 @@ class RubyDocTest
   end
   
   def code_line?(s=current_line)
-    s =~ CODE_LINE_RX
+    s =~ rx[:code_line]
+  end
+  
+  def unindent_code_line(s=current_line)
+    s.sub(rx[:indent], "")
   end
   
   def code_block_start?(s=current_line)
@@ -88,17 +106,14 @@ class RubyDocTest
   end
   
   def run_file
-    # run_code_block if code_block_start?
+    if @file_type == :rb
+      eval(@src, environment)
+    end
     while next_line
       run_code_block if code_block_start?
     end
     failures.length == 0
   end
-  
-  def unindent_code_line(s=current_line)
-    s.sub(CODE_LINE_RX, "")
-  end
-  
   
   def get_code_lines
     lines = []
@@ -115,7 +130,6 @@ class RubyDocTest
     self.block_count += 1
     
     lines = get_code_lines
-    
     reading = :statement
 
     result = nil
