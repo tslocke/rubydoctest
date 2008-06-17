@@ -1,6 +1,9 @@
-= rubydoctest
+= Ruby DocTest
 
-* http://github.com/tablatom/rubydoctest
+This work is originally from tablatom and drnic:
+	* http://github.com/tablatom/rubydoctest
+
+I've modified it to be able to use doctesting in both .doctest as well as .rb files (i.e. in comments).
 
 == Description:
 
@@ -51,6 +54,17 @@ Here is an example doctest file (say called simple.doctest):
 		>> 1 +
 		?> 2
 		=> 3
+
+Here is how you might use doctest 0.3.0 within an .rb file:
+	# The following method should add 5 and 5
+	# >> five_and_five
+	# => 10
+	
+	def five_and_five
+	  5 + 5
+	end
+
+Note that you will have to specify .rb files directly with the 'doctest' command-line tool.  You can give a directory if you're testing .doctest files.
 
 == Installation:
 
