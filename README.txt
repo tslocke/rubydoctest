@@ -64,7 +64,7 @@ Here is how you might use doctest 0.3.0 within an .rb file:
 	  5 + 5
 	end
 
-Note that you will have to specify .rb files directly with the 'doctest' command-line tool.  You can give a directory if you're testing .doctest files.
+Note that you will have to specify .rb files directly with the 'rubydoctest' command-line tool.  You can give a directory if you're testing .doctest files.
 
 == Installation:
 
