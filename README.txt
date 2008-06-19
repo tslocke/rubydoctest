@@ -5,6 +5,8 @@ This work is originally from tablatom and drnic:
 
 I've modified it to be able to use doctesting in both .doctest as well as .rb files (i.e. in comments).
 
+NOTE: This project is currently being rewritten (Jun 18, 2008).  Lots of flux right now!
+
 == Description:
 
 Ruby version of Python's doctest tool, but a bit different.
@@ -55,7 +57,7 @@ Here is an example doctest file (say called simple.doctest):
 		?> 2
 		=> 3
 
-Here is how you might use doctest 0.3.0 within an .rb file:
+Here is how you might use RubyDocTest within an .rb file:
 	# The following method should add 5 and 5
 	# >> five_and_five
 	# => 10
