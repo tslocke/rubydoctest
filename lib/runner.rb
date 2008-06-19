@@ -107,7 +107,7 @@ module RubyDocTest
             status = "ERR"
             detail =
               (RubyDocTest.ansi ? status_color : "") +
-              "#{e.original_exception.class.to_s}: #{e.original_exception.to_s}" + newline +
+              "#{e.original_exception.class.to_s}: #{e.original_exception.to_s.split("\n").join(newline)}" + newline +
               "  from #{@file_name}:#{e.statement.line_number}" + newline +
               e.statement.source_code +
               (RubyDocTest.ansi ? "\e[0m" : "")
