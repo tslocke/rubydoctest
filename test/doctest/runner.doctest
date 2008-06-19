@@ -1,6 +1,6 @@
 Underpinning the RubyDocTest framework is a RubyDocTest::Runner instance.
 
-	>> require File.dirname(__FILE__) + "/../../lib/rubydoctest"
+  >> require File.dirname(__FILE__) + "/../../lib/rubydoctest"
 
 The Runner parses the contents of *.doctest files under test, specifically it is 
 passed a String, in RubyDocTest format (a superset of Markdown format), runs
@@ -10,59 +10,59 @@ The aggregated results are returned for inspection and display to the user.
 
 The base case is to evaluate an empty string which should not fail.
 
-	>> runner = RubyDocTest.new("", __FILE__)
-	>> runner.run_file
-	
+  >> runner = RubyDocTest.new("", __FILE__)
+  >> runner.run_file
+  
 You should also be able to evaluate any Markdown document without failure.
 
-	>> runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
-	This is a markdown document.
-	
-		class Person
-		end
-	
-	No special DocTest code in this document	
-		MARKDOWN
-	>> runner.run_file
-	=> true
-		
+  >> runner = RubyDocTest.new(<<-MARKDOWN, "1")
+     This is a markdown document.
+     
+       class Person
+       end
+     
+     No special DocTest code in this document  
+     MARKDOWN
+  >> runner.run_file
+  => true
+    
 The excitement starts when the document under test includes `>>` sections 
 containing Ruby code:
 
-	>> runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
-	This is a doctest document.
+  >> runner = RubyDocTest.new(<<-MARKDOWN, "2")
+     This is a doctest document.
 
-		>> class Dog; end
-		>> dog = Dog.new
-		>> dog.class
-		=> Dog
+       >> class Dog; end
+       >> dog = Dog.new
+       >> dog.class
+       => Dog
 
-	The above contains several expression, and one test: `dog.class == Dog`
-		MARKDOWN
-	>> runner.run_file
-	=> true
-	
+     The above contains several expression, and one test: `dog.class == Dog`
+     MARKDOWN
+  >> runner.run_file
+  => true
+  
 You can also include code and tests that currently fail:
 
-	>> runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
-	Watch out for bad maths:
+  >> runner = RubyDocTest.new(<<-MARKDOWN, __FILE__)
+     Watch out for bad maths:
 
-		>> 1 + 1
-		=> 3
+       >> 1 + 1
+       => 3
 
-	MARKDOWN
-	>> runner.run_file
-	=> false
+     MARKDOWN
+  >> runner.run_file
+  => false
 
 And last, but not least, you can run ruby files (ending in .rb) through doctest as well:
 
-	>> runner = RubyDocTest.new(<<-MARKDOWN, "testme.rb")
-	# This code should add 5 and 5
-	# >> five_and_five
-	# => 10
-	def five_and_five
-		5 + 5
-	end
-	MARKDOWN
-	>> runner.run_file
-	=> true
+  >> runner = RubyDocTest.new(<<-MARKDOWN, "testme.rb")
+  # This code should add 5 and 5
+  # >> five_and_five
+  # => 10
+  def five_and_five
+    5 + 5
+  end
+  MARKDOWN
+  >> runner.run_file
+  => true

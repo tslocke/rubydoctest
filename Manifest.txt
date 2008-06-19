@@ -13,6 +13,7 @@ rubydoctest.gemspec
 script/console
 script/destroy
 script/generate
+script/rstakeout
 script/txt2html
 setup.rb
 tasks/deployment.rake
