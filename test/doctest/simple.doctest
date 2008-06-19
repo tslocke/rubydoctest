@@ -21,7 +21,7 @@ Test a some multiline statements
 
 
 	>> "a
-	b"
+		b"
 	=> "a\nb"
 
 	>> 1 +

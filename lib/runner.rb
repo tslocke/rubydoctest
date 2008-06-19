@@ -178,7 +178,7 @@ module RubyDocTest
       case src_lines[index]
       
       # An irb '>>' marker after a '#' indicates an embedded doctest
-      when /^(#{prefix})[>?]>(\s|\s*$)/
+      when /^(#{prefix})>>(\s|\s*$)/
         Statement.new(src_lines, index, @file_name)
       
       # An irb '=>' marker after a '#' indicates an embedded result

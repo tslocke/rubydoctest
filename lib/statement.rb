@@ -37,9 +37,16 @@ module RubyDocTest
     # >> s = RubyDocTest::Statement.new([">> b = 1 +", " 1", "not part of the statement"])
     # >> s.source_code
     # => "b = 1 +\n1"
+    #
+    # doctest: Lines indented by ?> should have the ?> removed.
+    # >> s = RubyDocTest::Statement.new([">> b = 1 +", "?> 1"])
+    # >> s.source_code
+    # => "b = 1 +\n1"
     def source_code
-      lines.first =~ /^#{Regexp.escape(indentation)}[>?]>\s(.*)$/
-      ([$1] + (lines[1..-1] || [])).join("\n")
+      lines.first =~ /^#{Regexp.escape(indentation)}>>\s(.*)$/
+      first = [$1]
+      remaining = (lines[1..-1] || [])
+      (first + remaining).join("\n")
     end
     
     # === Test
@@ -53,7 +60,6 @@ module RubyDocTest
     # >> s = RubyDocTest::Statement.new([">> b = 1 +"])
     # >> begin s.evaluate; :fail; rescue RubyDocTest::EvaluationError; :ok end
     # => :ok
-    # 
     def evaluate
       sc = source_code.gsub("__FILE__", @file_name.inspect)
       # puts "EVAL: #{sc}"

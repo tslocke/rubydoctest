@@ -1,34 +1,27 @@
 #!/usr/bin/env ruby
 
-USAGE = "USAGE: rdoctest [ --html ] [ --trace ] [ --debugger ] <path>"
+USAGE = "USAGE: rdoctest [ --html ] [ --trace ] [ --debugger ] <files>"
 
-SUFFIX = "{r,}doctest"
-
-file = ARGV.pop or (puts USAGE; exit 1)
+options, files = ARGV.partition{ |a| a =~ /^--/ }
 
 requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
-requires << 'ruby-debug' if ARGV.include?("--debugger")
+requires << 'ruby-debug' if options.include?("--debugger")
+trace = "RubyDocTest.trace = true;" if options.include?("--trace")
 
-command = if ARGV.include?("--rcov")
-            args = (ARGV - ["--rcov"]).map { |a| %("#{a}") }.join(' ')
-            "rcov -x /gems/,rdoctest"
-          else
-            "ruby"
-          end
-trace = "RubyDocTest.trace = true;" if ARGV.include?("--trace")
+# command = if options.include?("--rcov")
+#             args = (ARGV - ["--rcov"]).map { |a| %("#{a}") }.join(' ')
+#             "rcov -x /gems/,rdoctest"
+#           else
+#             "ruby"
+#           end
+command = "ruby"
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 
-puts "<html><body><pre>" if ARGV.include?("--html")
-
-files = if File.directory?(file)
-          Dir["#{file}/**/*.#{SUFFIX}"]
-        else
-          [file]
-        end
+puts "<html><body><pre>" if options.include?("--html")
 
 files.reverse_each do |f|
-  puts  "*** " + f.sub("#{file}/", "").sub(".#{SUFFIX}", ""), "" if files.length > 1
+  # puts  "*** " + f.sub("#{file}/", "").sub(".#{SUFFIX}", ""), "" if files.length > 1
   system %(#{command} -e "#{requires} #{trace} RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run")
 end
 
