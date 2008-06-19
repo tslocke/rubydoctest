@@ -1,8 +1,7 @@
 
-rubydoctest comes as an executable that takes a file or directory:
+rubydoctest comes as an executable that takes a list of files:
 	
-	rubydoctest .
-	rubydoctest some/path/to/tests
+	rubydoctest lib/*.rb
 	rubydoctest simple.doctest
 
 

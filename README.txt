@@ -3,23 +3,36 @@
 This work is originally from tablatom and drnic:
 	* http://github.com/tablatom/rubydoctest
 
-I've modified it to be able to use doctesting in both .doctest as well as .rb files (i.e. in comments).
-
-NOTE: This project is currently being rewritten (Jun 18, 2008).  Lots of flux right now!
+The new repository for 0.5 and up is at:
+	* http://github.com/canadaduane/rubydoctest
 
 == Description:
 
-Ruby version of Python's doctest tool, but a bit different.
+Ruby version of Python's doctest tool, but a bit different. Ruby DocTest
+allows you to put your tests right in with your Ruby code. It also allows you
+to put tests in a separate documentation file and have the tests run
+automatically.
+
+There are two fundamental "modes" that Ruby DocTest works in: ruby source file
+mode (":ruby") and doctest mode (":doctest").  See the examples section below.
 
 == Synopsis:
 
-rubydoctest comes as an executable that takes a file or directory:
+rubydoctest comes as an executable that takes a list of files:
 	
-  rubydoctest .
+  rubydoctest lib/*.rb
 	rubydoctest simple.doctest
 
-== Example:
+== Examples:
 	
+Here is how you might use RubyDocTest within an .rb file:
+	# doctest: Add 5 and 5 to get 10
+	# >> five_and_five
+	# => 10
+	def five_and_five
+	  5 + 5
+	end
+
 Here is an example doctest file (say called simple.doctest):
 	
 	# Simple test of RubyDocTest
@@ -57,17 +70,6 @@ Here is an example doctest file (say called simple.doctest):
 		?> 2
 		=> 3
 
-Here is how you might use RubyDocTest within an .rb file:
-	# The following method should add 5 and 5
-	# >> five_and_five
-	# => 10
-	
-	def five_and_five
-	  5 + 5
-	end
-
-Note that you will have to specify .rb files directly with the 'rubydoctest' command-line tool.  You can give a directory if you're testing .doctest files.
-
 == Installation:
 
 Major releases:
@@ -76,7 +78,7 @@ Major releases:
 
 Build from source:
 
-	git clone git://github.com/tablatom/rubydoctest.git
+	git clone git://github.com/canadaduane/rubydoctest.git
 	cd rubydoctest
 	rake manifest && rake install
 
@@ -101,21 +103,20 @@ See http://github.com/drnic/ruby-doctest-tmbundle
 
 Copyright (c) 2008 Tom Locke, Nic Williams, Duane Johnson
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the 'Software'), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

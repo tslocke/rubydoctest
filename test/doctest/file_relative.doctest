@@ -1,5 +1,0 @@
-Its important that __FILE__ evaluates to the *.doctest file than anything else
-
-	>> !!(__FILE__ =~ %r{file_relative.doctest\Z})
-	=> true
-
