@@ -68,13 +68,5 @@ module RubyDocTest
             end
       end
     end
-    
-    def start_irb
-      IRB.init_config(nil)
-      IRB.conf[:PROMPT_MODE] = :SIMPLE
-      irb = IRB::Irb.new(IRB::WorkSpace.new(environment))
-      IRB.conf[:MAIN_CONTEXT] = irb.context
-      irb.eval_input
-    end
   end
 end

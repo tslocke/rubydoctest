@@ -66,47 +66,63 @@ module RubyDocTest
       @tests.all?{ |t| t.pass? }
     end
     
+    # === Description
+    # Starts an IRB prompt when the "!!!" SpecialDirective is given.
+    def start_irb
+      IRB.init_config(nil)
+      IRB.conf[:PROMPT_MODE] = :SIMPLE
+      irb = IRB::Irb.new(IRB::WorkSpace.new(TOPLEVEL_BINDING))
+      IRB.conf[:MAIN_CONTEXT] = irb.context
+      catch(:IRB_EXIT) do
+        irb.eval_input
+      end
+    end
+    
     def run
       prepare_tests
       newline = "\n       "
       everything_passed = true
       puts "=== Testing '#{@file_name}'..."
       @tests.each do |t|
-        status_color = "\e[32m"
-        status = "OK"
-        detail = nil
-        begin
-          unless t.pass?
-            everything_passed = false
-            status_color = "\e[31m"
-            status = "FAIL"
+        if SpecialDirective === t
+          start_irb
+        else
+          status_color = "\e[32m"
+          status = "OK"
+          detail = nil
+          begin
+            unless t.pass?
+              everything_passed = false
+              status_color = "\e[31m"
+              status = "FAIL"
+              detail =
+                (RubyDocTest.ansi ? status_color : "") +
+                "Got: #{t.actual_result}#{newline}Expected: #{t.expected_result}" + newline +
+                "  from #{@file_name}:#{t.first_failed.result.line_number}" +
+                (RubyDocTest.ansi ? "\e[0m" : "")
+              
+            end
+          rescue EvaluationError => e
+            status_color = "\e[33m"
+            status = "ERR"
             detail =
               (RubyDocTest.ansi ? status_color : "") +
-              "Got: #{t.actual_result}#{newline}Expected: #{t.expected_result}" + newline +
-              "  from #{@file_name}:#{t.first_failed.result.line_number}" +
+              "#{e.original_exception.class.to_s}: #{e.original_exception.to_s}" + newline +
+              "  from #{@file_name}:#{e.statement.line_number}" + newline +
+              e.statement.source_code +
               (RubyDocTest.ansi ? "\e[0m" : "")
-              
           end
-        rescue EvaluationError => e
-          status_color = "\e[33m"
-          status = "ERR"
-          detail =
-            (RubyDocTest.ansi ? status_color : "") +
-            "#{e.original_exception.class.to_s}: #{e.original_exception.to_s}" + newline +
-            "  from #{@file_name}:#{e.statement.line_number}" + newline +
-            e.statement.source_code +
-            (RubyDocTest.ansi ? "\e[0m" : "")
+          status_formatted =
+            if RubyDocTest.ansi
+              status_color + status.center(4) + "\e[0m"
+            else
+              status.center(4)
+            end
+          puts \
+            "#{status_formatted} | " +
+            "#{t.description.split("\n").join(newline)}" +
+            (detail ? newline + detail : "")
         end
-        status_formatted =
-          if RubyDocTest.ansi
-            status_color + status.center(4) + "\e[0m"
-          else
-            status.center(4)
-          end
-        puts \
-          "#{status_formatted} | " +
-          "#{t.description.split("\n").join(newline)}" +
-          (detail ? newline + detail : "")
       end
       everything_passed
     end
@@ -244,9 +260,11 @@ module RubyDocTest
           current_statements = []
         when SpecialDirective
           case g.name
-          when "doctest"
+          when "doctest:"
             blocks << CodeBlock.new(current_statements) unless current_statements.empty?
             current_statements = []
+          when "!!!"
+            # ignore
           end
           blocks << g
         end
@@ -292,9 +310,11 @@ module RubyDocTest
           (assigned_blocks || unassigned_blocks) << g
         when SpecialDirective
           case g.name
-          when "doctest"
+          when "doctest:"
             assigned_blocks = []
             tests << Test.new(g.value, assigned_blocks)
+          when "!!!"
+            tests << g
           end
         end
       end

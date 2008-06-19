@@ -5,7 +5,7 @@ require 'lines'
 
 module RubyDocTest
   class SpecialDirective < Lines
-    NAMES = %w(doctest)
+    NAMES = ["doctest:", "!!!"]
     NAMES_FOR_RX = NAMES.map{ |n| Regexp.escape(n) }.join("|")
     
     # === Test
@@ -13,9 +13,9 @@ module RubyDocTest
     # doctest: The name of the directive should be detected in the first line
     # >> s = RubyDocTest::SpecialDirective.new(["doctest: Testing Stuff", "Other Stuff"])
     # >> s.name
-    # => "doctest"
+    # => "doctest:"
     def name
-      lines.first =~ /^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX}):/
+      lines.first =~ /^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX})/
       $1
     end
     
@@ -35,7 +35,7 @@ module RubyDocTest
     # >> s.value
     # => "Testing Stuff\nOn Two Lines"
     def value
-      $2.strip if lines.join("\n")[/^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX}):(.*)/m]
+      $2.strip if lines.join("\n")[/^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX})(.*)/m]
     end
   end
 end

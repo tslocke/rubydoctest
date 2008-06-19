@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-USAGE = "USAGE: rdoctest [ --html ] [ --trace ] [ --debugger ] <files>"
+USAGE = "USAGE: rubydoctest [ --html ] [ --trace ] [ --debugger ] <files>"
 
 options, files = ARGV.partition{ |a| a =~ /^--/ }
 
