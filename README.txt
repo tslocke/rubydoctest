@@ -80,7 +80,7 @@ Build from source:
 
 	git clone git://github.com/canadaduane/rubydoctest.git
 	cd rubydoctest
-	rake manifest && rake install
+	rake manifest:refresh && rake install
 
 == Testing DocTest:
 	
