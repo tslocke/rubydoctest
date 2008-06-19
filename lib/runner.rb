@@ -83,15 +83,19 @@ module RubyDocTest
       newline = "\n       "
       everything_passed = true
       puts "=== Testing '#{@file_name}'..."
+      ok, fail, err = 0, 0, 0
       @tests.each do |t|
         if SpecialDirective === t
           start_irb
         else
-          status_color = "\e[32m"
-          status = "OK"
-          detail = nil
           begin
-            unless t.pass?
+            if t.pass?
+              ok += 1
+              status_color = "\e[32m"
+              status = "OK"
+              detail = nil
+            else
+              fail += 1
               everything_passed = false
               status_color = "\e[31m"
               status = "FAIL"
@@ -103,6 +107,7 @@ module RubyDocTest
               
             end
           rescue EvaluationError => e
+            err += 1
             status_color = "\e[33m"
             status = "ERR"
             detail =
@@ -124,6 +129,11 @@ module RubyDocTest
             (detail ? newline + detail : "")
         end
       end
+      puts \
+        "#{@blocks.size} comparisons, " +
+        "#{@tests.size} doctests, " +
+        "#{fail} failures, " +
+        "#{err} errors"
       everything_passed
     end
     
