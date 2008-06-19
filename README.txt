@@ -63,7 +63,7 @@ Here is an example doctest file (say called simple.doctest):
 
 
 		>> "a
-		b"
+			b"
 		=> "a\nb"
 
 		>> 1 +
