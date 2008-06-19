@@ -49,7 +49,7 @@ module RubyDocTest
     end
     
     def prepare_tests
-      eval(@src, TOPLEVEL_BINDING) if @mode == :ruby
+      eval(@src, TOPLEVEL_BINDING, @file_name) if @mode == :ruby
       @groups = read_groups
       @blocks = organize_blocks
       @tests = organize_tests
