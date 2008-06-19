@@ -2,6 +2,7 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 require 'irb'
+require "runner"
 
 module RubyDocTest
   
@@ -15,10 +16,3 @@ module RubyDocTest
   end
   
 end
-
-require "lines"
-require "statement"
-require "result"
-require "special_directive"
-require "test"
-require "runner"

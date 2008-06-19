@@ -5,7 +5,17 @@ require 'rubydoctest'
 require 'lines'
 
 module RubyDocTest
+  class EvaluationError < Exception
+    attr_reader :source_code, :line_number, :original_exception
+    def initialize(source_code, line_number, original_exception)
+      @source_code, @line_number, @original_exception =
+        source_code, line_number, original_exception
+    end
+  end
+  
   class Statement < Lines
+    
+    attr_reader :actual_result
     
     # === Test
     # 
@@ -36,24 +46,14 @@ module RubyDocTest
     # => :ok
     # 
     def evaluate
-      eval(source_code, TOPLEVEL_BINDING, __FILE__, __LINE__)
+      @actual_result = eval(source_code, TOPLEVEL_BINDING, __FILE__, __LINE__)
     rescue SyntaxError => e
-      puts "Syntax error in statement on line #{line_number}:"
-      puts RubyDocTest.indent(source_code)
-      puts e.to_s
-      puts
-      exit 1
+      raise EvaluationError, source_code, line_number, e
     rescue Exception => e
-      puts "Exception in statement on line #{line_number}:"
-      puts RubyDocTest.indent(source_code)
-      puts e.backtrace
-
       if RubyDocTest.trace
         raise
       else
-        puts e.to_s
-        puts
-        exit 1      
+        raise EvaluationError, source_code, line_number, e
       end
     end
   end

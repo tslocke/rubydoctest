@@ -18,7 +18,40 @@ module RubyDocTest
         end
     end
     
-    def matches?(actual_result, string_comparison = true)
+    # === Tests
+    # doctest: Strings should match
+    # >> r = RubyDocTest::Result.new(["=> 'hi'"])
+    # >> r.matches? 'hi'
+    # => true
+    #
+    # >> r = RubyDocTest::Result.new(["=> \"hi\""])
+    # >> r.matches? "hi"
+    # => true
+    #
+    # doctest: Regexps should match
+    # >> r = RubyDocTest::Result.new(["=> /^reg.../"])
+    # >> r.matches? /^reg.../
+    # => true
+    #
+    # >> r = RubyDocTest::Result.new(["=> /^reg.../"])
+    # >> r.matches? /^regexp/
+    # => false
+    #
+    # doctest: Arrays should match
+    # >> r = RubyDocTest::Result.new(["=> [1, 2, 3]"])
+    # >> r.matches? [1, 2, 3]
+    # => true
+    #
+    # doctest: Arrays of arrays should match
+    # >> r = RubyDocTest::Result.new(["=> [[1, 2], [3, 4]]"])
+    # >> r.matches? [[1, 2], [3, 4]]
+    # => true
+    #
+    # doctest: Hashes should match
+    # >> r = RubyDocTest::Result.new(["=> {:one => 1, :two => 2}"])
+    # >> r.matches?({:two => 2, :one => 1})
+    # => true
+    def matches?(actual_result, string_comparison = false)
       if string_comparison
         actual_result == expected_result
       else

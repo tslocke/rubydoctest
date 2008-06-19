@@ -14,9 +14,9 @@ module RubyDocTest
     # >> s = RubyDocTest::SpecialDirective.new(["doctest: Testing Stuff", "Other Stuff"])
     # >> s.name
     # => "doctest"
-    #
     def name
-      lines.first[/^#{NAMES_FOR_RX}/]
+      lines.first =~ /^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX}):/
+      $1
     end
     
     # === Test
@@ -26,12 +26,16 @@ module RubyDocTest
     # >> s.value
     # => "Testing Stuff"
     #
+    # >> s = RubyDocTest::SpecialDirective.new(["  # doctest: Testing Stuff", "  # Other Stuff"])
+    # >> s.value
+    # => "Testing Stuff"
+    #
     # doctest: Multiple lines for the directive value should work as well
     # >> s = RubyDocTest::SpecialDirective.new(["doctest: Testing Stuff", "  On Two Lines"])
     # >> s.value
     # => "Testing Stuff\nOn Two Lines"
     def value
-      $1.strip if lines.join("\n")[/^#{NAMES_FOR_RX}:(.*)/m]
+      $2.strip if lines.join("\n")[/^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX}):(.*)/m]
     end
   end
 end

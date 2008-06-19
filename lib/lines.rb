@@ -76,15 +76,22 @@ module RubyDocTest
       end_index = start_index
       idt = indentation(doc_lines, start_index)
       # Find next lines that are blank, or have indentation more than the first line
-      remaining_lines(doc_lines, start_index).each do |current_line|
-        end_index += 1 if current_line =~ /^(#{Regexp.escape(idt)}\s+|\s*$)/
+      remaining_lines(doc_lines, start_index + 1).each do |current_line|
+        if current_line =~ /^(#{Regexp.escape(idt)}\s+|\s*$)/
+          end_index += 1
+        else
+          break
+        end
       end
       # Compute the range from what we found
       start_index..end_index
     end
     
-    protected
+    def inspect
+      "#<#{self.class} lines=#{lines.inspect}>"
+    end
     
+    protected
     
     # === Tests
     # >> l = RubyDocTest::Lines.new([])
@@ -97,7 +104,11 @@ module RubyDocTest
     # >> l.send :indentation, [" # a"], 0
     # => " # "
     def indentation(doc_lines = @doc_lines, line_index = @line_index)
-      doc_lines[line_index][/^(\s*#\s*|\s*)/]
+      if doc_lines[line_index]
+        doc_lines[line_index][/^(\s*#\s*|\s*)/]
+      else
+        ""
+      end
     end
     
     

@@ -6,6 +6,7 @@ require 'statement'
 require 'result'
 require 'special_directive'
 require 'code_block'
+require 'test'
 
 module RubyDocTest
   class Runner
@@ -24,7 +25,6 @@ module RubyDocTest
     #       comments that are interspersed with irb lines to eval, e.g. '>>' and '=>'.
     attr_accessor :mode
     
-    
     # === Tests
     # 
     # doctest: Runner mode should default to :doctest and :ruby from the filename
@@ -39,26 +39,55 @@ module RubyDocTest
     # doctest: The src_lines should be separated into an array
     # >> r = RubyDocTest::Runner.new("a\nb\n", "test.doctest")
     # >> r.instance_variable_get("@src_lines")
-    # => ["a", "b", ""]
-    def initialize(src, file_name, initial_mode = nil)
+    # => ["a", "b"]
+    def initialize(src, file_name = "test.doctest", initial_mode = nil)
       @src, @file_name = src, file_name
       @mode = initial_mode || (File.extname(file_name) == ".rb" ? :ruby : :doctest)
       
       @src_lines = src.split("\n")
       @groups, @blocks = [], []
     end
-
-    def run
-      run_file
-      print_report
-    end
-
-    def run_file
+    
+    def prepare_tests
       eval(@src, TOPLEVEL_BINDING) if @mode == :ruby
       @groups = read_groups
       @blocks = organize_blocks
       @tests = organize_tests
-      @tests.map{ |t| t.run }
+    end
+    
+    # >> r = RubyDocTest::Runner.new(IO.read("test/inline_doctest.rb"), "inline_doctest.rb")
+    # >> r.pass?
+    # => true
+    def pass?
+      prepare_tests
+      @tests.all?{ |t| t.pass? }
+    end
+    
+    def run
+      newline = "\n       "
+      prepare_tests
+      everything_passed = true
+      @tests.each do |t|
+        status = "OK"
+        detail = nil
+        begin
+          unless t.pass?
+            everything_passed = false
+            status = "FAIL"
+            detail = "Got: #{t.actual_result}#{newline}Expected: #{t.expected_result}"
+          end
+        rescue EvaluationError => e
+          status = "ERR"
+        end
+        # puts "Exception in statement on line #{line_number}:"
+        # puts RubyDocTest.indent(source_code)
+        # puts e.backtrace
+        puts \
+          "[#{status.center(4)}] " +
+          "#{t.description.split("\n").join(newline)}" +
+          (detail ? newline + detail : "")
+      end
+      everything_passed
     end
     
     # === Tests
@@ -103,15 +132,21 @@ module RubyDocTest
               read_groups(src_lines[index...(src_lines.size)], :doctest_with_end)
           
           else
-            groups << g if g = match_group("\\s*#\\s*", src_lines, index)
+            if g = match_group("\\s*#\\s*", src_lines, index)
+              groups << g
+            end
           
           end
         when :doctest
-          groups << g if g = match_group("\\s*", src_lines, index)
+          if g = match_group("\\s*", src_lines, index)
+            groups << g
+          end
           
         when :doctest_with_end
           break if line =~ /^=end/
-          groups << g if g = match_group("\\s*", src_lines, index)
+          if g = match_group("\\s*", src_lines, index)
+            groups << g
+          end
           
         end
       end
@@ -143,7 +178,7 @@ module RubyDocTest
     # doctest: The organize_blocks method should separate Statement, Result and SpecialDirective
     #          objects into CodeBlocks.
     # >> r = RubyDocTest::Runner.new(">> t = 1\n>> t + 2\n=> 3\n>> u = 1", "test.doctest")
-    # >> r.run_file
+    # >> r.prepare_tests
     # 
     # >> r.blocks.first.statements.map{|s| s.lines}
     # => [[">> t = 1"], [">> t + 2"]]
@@ -160,7 +195,7 @@ module RubyDocTest
     # doctest: Two doctest directives--each having its own statement--should be separated properly
     #          by organize_blocks.
     # >> r = RubyDocTest::Runner.new("doctest: one\n>> t = 1\ndoctest: two\n>> t + 2", "test.doctest")
-    # >> r.run_file
+    # >> r.prepare_tests
     # >> r.blocks.map{|b| b.class}
     # => [RubyDocTest::SpecialDirective, RubyDocTest::CodeBlock,
     #     RubyDocTest::SpecialDirective, RubyDocTest::CodeBlock]
@@ -203,7 +238,7 @@ module RubyDocTest
     # 
     # doctest: Tests should be organized into groups based on the 'doctest' SpecialDirective
     # >> r = RubyDocTest::Runner.new("doctest: one\n>> t = 1\ndoctest: two\n>> t + 2", "test.doctest")
-    # >> r.run_file
+    # >> r.prepare_tests
     # >> r.tests.size
     # => 2
     # >> r.tests[0].code_blocks.map{|c| c.statements}.flatten.map{|s| s.lines}
@@ -217,7 +252,7 @@ module RubyDocTest
     #
     # doctest: Without a 'doctest' SpecialDirective, there is one Test called "Default Test".
     # >> r = RubyDocTest::Runner.new(">> t = 1\n>> t + 2\n=> 3\n>> u = 1", "test.doctest")
-    # >> r.run_file
+    # >> r.prepare_tests
     # >> r.tests.size
     # => 1
     # 
@@ -233,10 +268,6 @@ module RubyDocTest
       blocks.each do |g|
         case g
         when CodeBlock
-          puts "a"
-          p assigned_blocks
-          puts "u"
-          p unassigned_blocks
           (assigned_blocks || unassigned_blocks) << g
         when SpecialDirective
           case g.name
