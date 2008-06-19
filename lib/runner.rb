@@ -55,7 +55,10 @@ module RubyDocTest
       @tests = organize_tests
     end
     
-    # >> r = RubyDocTest::Runner.new(IO.read("test/inline_doctest.rb"), "inline_doctest.rb")
+    # === Tests
+    # doctest: Run through a simple inline doctest (rb) file and see if it passes
+    # >> file = File.join(File.dirname(__FILE__), "..", "test", "inline.rb")
+    # >> r = RubyDocTest::Runner.new(IO.read(file), "inline.rb")
     # >> r.pass?
     # => true
     def pass?
@@ -64,26 +67,44 @@ module RubyDocTest
     end
     
     def run
-      newline = "\n       "
       prepare_tests
+      newline = "\n       "
       everything_passed = true
+      puts "=== Testing '#{@file_name}'..."
       @tests.each do |t|
+        status_color = "\e[32m"
         status = "OK"
         detail = nil
         begin
           unless t.pass?
             everything_passed = false
+            status_color = "\e[31m"
             status = "FAIL"
-            detail = "Got: #{t.actual_result}#{newline}Expected: #{t.expected_result}"
+            detail =
+              (RubyDocTest.ansi ? status_color : "") +
+              "Got: #{t.actual_result}#{newline}Expected: #{t.expected_result}" + newline +
+              "  from #{@file_name}:#{t.first_failed.result.line_number}" +
+              (RubyDocTest.ansi ? "\e[0m" : "")
+              
           end
         rescue EvaluationError => e
+          status_color = "\e[33m"
           status = "ERR"
+          detail =
+            (RubyDocTest.ansi ? status_color : "") +
+            "#{e.original_exception.class.to_s}: #{e.original_exception.to_s}" + newline +
+            "  from #{@file_name}:#{e.statement.line_number}" + newline +
+            e.statement.source_code +
+            (RubyDocTest.ansi ? "\e[0m" : "")
         end
-        # puts "Exception in statement on line #{line_number}:"
-        # puts RubyDocTest.indent(source_code)
-        # puts e.backtrace
+        status_formatted =
+          if RubyDocTest.ansi
+            status_color + status.center(4) + "\e[0m"
+          else
+            status.center(4)
+          end
         puts \
-          "[#{status.center(4)}] " +
+          "#{status_formatted} | " +
           "#{t.description.split("\n").join(newline)}" +
           (detail ? newline + detail : "")
       end
@@ -158,7 +179,7 @@ module RubyDocTest
       
       # An irb '>>' marker after a '#' indicates an embedded doctest
       when /^(#{prefix})[>?]>(\s|\s*$)/
-        Statement.new(src_lines, index)
+        Statement.new(src_lines, index, @file_name)
       
       # An irb '=>' marker after a '#' indicates an embedded result
       when /^(#{prefix})=>\s/
