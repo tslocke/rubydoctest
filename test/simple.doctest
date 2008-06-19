@@ -1,12 +1,10 @@
 # Simple test of RubyDocTest
 
-This is an example test
-
+	doctest: This is an example test
 	>> 1 + 2
 	=> 3
 
-Test a some multiline statements
-
+	doctest: Test a some multiline statements
 	>> 
 		class Person
 			attr_accessor :name
@@ -20,11 +18,18 @@ Test a some multiline statements
 	=> "Tom"
 
 
+	doctest: Multiline string statements
 	>> "a
 		b"
 	=> "a\nb"
 
+	doctest: Multiline ruby statements
 	>> 1 +
 	?> 2
 	=> 3
 
+	doctest: Multiline text strings in results
+	>> "multiline\ntext\nstring"
+	=> "multiline
+		text
+		string"

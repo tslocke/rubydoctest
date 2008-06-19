@@ -15,8 +15,9 @@ module RubyDocTest
     # >> s.name
     # => "doctest:"
     def name
-      lines.first =~ /^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX})/
-      $1
+      if m = lines.first.match(/^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX})/)
+        m[1]
+      end
     end
     
     # === Test
@@ -35,7 +36,9 @@ module RubyDocTest
     # >> s.value
     # => "Testing Stuff\nOn Two Lines"
     def value
-      $2.strip if lines.join("\n")[/^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX})(.*)/m]
+      if m = lines.join("\n").match(/^#{Regexp.escape(indentation)}(#{NAMES_FOR_RX})(.*)/m)
+        m[2].strip
+      end
     end
   end
 end

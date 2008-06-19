@@ -27,10 +27,8 @@ tasks/deployment.rake
 tasks/doctests.rake
 tasks/environment.rake
 tasks/website.rake
-test/doctest/file_relative.doctest
-test/doctest/runner.doctest
-test/doctest/simple.doctest
 test/inline.rb
+test/simple.doctest
 test/test_helper.rb
 test/test_rubydoctest.rb
 website/index.html
