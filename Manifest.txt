@@ -7,8 +7,15 @@ Rakefile
 bin/rubydoctest
 config/hoe.rb
 config/requirements.rb
+lib/code_block.rb
+lib/lines.rb
+lib/result.rb
 lib/rubydoctest.rb
 lib/rubydoctest/version.rb
+lib/runner.rb
+lib/special_directive.rb
+lib/statement.rb
+lib/test.rb
 rubydoctest.gemspec
 script/console
 script/destroy
@@ -23,6 +30,7 @@ tasks/website.rake
 test/doctest/file_relative.doctest
 test/doctest/runner.doctest
 test/doctest/simple.doctest
+test/inline.rb
 test/test_helper.rb
 test/test_rubydoctest.rb
 website/index.html
