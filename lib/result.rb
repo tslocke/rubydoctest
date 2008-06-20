@@ -51,22 +51,19 @@ module RubyDocTest
     # >> r = RubyDocTest::Result.new(["=> {:one => 1, :two => 2}"])
     # >> r.matches?({:two => 2, :one => 1})
     # => true
-    def matches?(actual_result, string_comparison = false)
-      if string_comparison
-        actual_result == expected_result
-      else
-        actual_result = actual_result.inspect
-        normalize_result(expected_result) == normalize_result(actual_result) or
-            # If the expected result looks like a literal, see if they eval to
-            # equal objects. This will often fail.
-            if expected_result =~ /^[:\[{A-Z'"%\/]/
-              begin
-                eval(expected_result) == eval(actual_result)
-              rescue Exception
-                false
-              end
+    def matches?(actual_result)
+      actual_result = actual_result.inspect
+      normalize_result(expected_result) == normalize_result(actual_result) or
+          # If the expected result looks like a literal, see if they eval to
+          # equal objects. This will often fail.
+          if expected_result =~ /^[:\[{A-Z'"%\/]/
+            begin
+              eval(expected_result, TOPLEVEL_BINDING) ==
+              eval(actual_result, TOPLEVEL_BINDING)
+            rescue Exception
+              false
             end
-      end
+          end
     end
   end
 end
