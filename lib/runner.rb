@@ -185,9 +185,10 @@ module RubyDocTest
     # => 2
     # >> groups.map{ |g| g.lines.first }
     # => [" >> z = 10", " => 10"]
-    def read_groups(src_lines = @src_lines, mode = @mode)
+    def read_groups(src_lines = @src_lines, mode = @mode, start_index = 0)
       groups = []
-      src_lines.each_with_index do |line, index|
+      (start_index).upto(src_lines.size) do |index|
+        line = src_lines[index]
         case mode
         when :ruby
           case line
@@ -196,7 +197,7 @@ module RubyDocTest
           when /^=begin/
             groups +=
               # Get statements, results, and directives as if inside a doctest
-              read_groups(src_lines[index...(src_lines.size)], :doctest_with_end)
+              read_groups(src_lines, :doctest_with_end, index)
           
           else
             if g = match_group("\\s*#\\s*", src_lines, index)
@@ -295,7 +296,7 @@ module RubyDocTest
             current_statements = []
           when "doctest_require:"
             $:.unshift(@file_name)
-            require eval(g.value, TOPLEVEL_BINDING)
+            require eval(g.value, TOPLEVEL_BINDING, @file_name, g.line_number)
             $:.shift
           when "!!!"
             # ignore
