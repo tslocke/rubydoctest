@@ -5,7 +5,7 @@ require 'lines'
 
 module RubyDocTest
   class SpecialDirective < Lines
-    NAMES = ["doctest:", "!!!"]
+    NAMES = ["doctest:", "!!!", "doctest_require:"]
     NAMES_FOR_RX = NAMES.map{ |n| Regexp.escape(n) }.join("|")
     
     # === Test

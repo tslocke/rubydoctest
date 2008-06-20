@@ -66,11 +66,16 @@ module RubyDocTest
       @groups, @blocks = [], []
     end
     
+    # doctest: Using the doctest_require: SpecialDirective should require a file relative to the current one.
+    # >> r = RubyDocTest::Runner.new("# doctest_require: 'doctest_require.rb'", __FILE__)
+    # >> r.prepare_tests
+    # >> is_doctest_require_successful?
+    # => true
     def prepare_tests
-      eval(@src, TOPLEVEL_BINDING, @file_name) if @mode == :ruby
       @groups = read_groups
       @blocks = organize_blocks
       @tests = organize_tests
+      eval(@src, TOPLEVEL_BINDING, @file_name) if @mode == :ruby
     end
     
     # === Tests
@@ -107,7 +112,7 @@ module RubyDocTest
       puts "=== Testing '#{@file_name}'..."
       ok, fail, err = 0, 0, 0
       @tests.each do |t|
-        if SpecialDirective === t
+        if SpecialDirective === t and t.name == "!!!"
           start_irb
         else
           begin
@@ -288,6 +293,10 @@ module RubyDocTest
           when "doctest:"
             blocks << CodeBlock.new(current_statements) unless current_statements.empty?
             current_statements = []
+          when "doctest_require:"
+            $:.unshift(@file_name)
+            require eval(g.value, TOPLEVEL_BINDING)
+            $:.shift
           when "!!!"
             # ignore
           end
