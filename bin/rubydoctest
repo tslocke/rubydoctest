@@ -1,28 +1,40 @@
 #!/usr/bin/env ruby
 
-USAGE = "USAGE: rubydoctest [ --html ] [ --trace ] [ --debugger ] <files>"
+if ARGV.empty?
+  puts <<-DIRECTIONS
+  USAGE: rubydoctest [ --html ] [ --plain ] [ --trace ] [ --debugger ] <files>
+  
+  rubydoctest parses Ruby files (.rb) or DocTest files (.doctest) for irb-style
+  sessions in comments, and runs the commented sessions as tests.
+  
+  See http://github.com/tablatom/rubydoctest/wikis for more information.
+  DIRECTIONS
+  exit 0
+end
 
 options, files = ARGV.partition{ |a| a =~ /^--/ }
 
 requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
-trace = "RubyDocTest.trace = true;" if options.include?("--trace")
-
-# command = if options.include?("--rcov")
-#             args = (ARGV - ["--rcov"]).map { |a| %("#{a}") }.join(' ')
-#             "rcov -x /gems/,rdoctest"
-#           else
-#             "ruby"
-#           end
-command = "ruby"
+ruby_lines = []
+ruby_lines << "RubyDocTest.trace = true;" if options.include?("--trace")
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 
-puts "<html><body><pre>" if options.include?("--html")
-
-files.reverse_each do |f|
-  # puts  "*** " + f.sub("#{file}/", "").sub(".#{SUFFIX}", ""), "" if files.length > 1
-  system %(#{command} -e "#{requires} #{trace} RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run")
+def files_runner(command, files, requires, lines)
+  files.reverse_each do |f|
+    system %(#{command} -e "#{requires} #{lines.join(" ")} RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run")
+  end
 end
 
-puts "</pre></body></html>" if ARGV.include?("--html")
+if options.include?("--plain")
+  ruby_lines << "RubyDocTest.output_format = :plain;" 
+  files_runner("ruby", files, requires, ruby_lines)
+elsif options.include?("--html")
+  ruby_lines << "RubyDocTest.output_format = :html;" 
+  puts "<html><body><pre>"
+  files_runner("ruby", files, requires, ruby_lines)
+  puts "</pre></body></html>"
+else
+  files_runner("ruby", files, requires, ruby_lines)
+end

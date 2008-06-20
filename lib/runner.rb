@@ -11,7 +11,25 @@ require 'test'
 module RubyDocTest
   class Runner
     attr_reader :groups, :blocks, :tests
-
+    
+    @@color = {
+      :html => {
+        :red    => %{<font color="red">%s</font>},
+        :yellow => %{<font color="#C0C000">%s</font>},
+        :green  => %{<font color="green">%s</font>}
+      },
+      :ansi => {
+        :red    => %{\e[31m%s\e[0m},
+        :yellow => %{\e[33m%s\e[0m},
+        :green  => %{\e[32m%s\e[0m}
+      },
+      :plain => {
+        :red    => "%s",
+        :yellow => "%s",
+        :green  => "%s"
+      }
+    }
+    
     # The evaluation mode, either :doctest or :ruby.
     #
     # Modes:
@@ -78,6 +96,10 @@ module RubyDocTest
       end
     end
     
+    def format_color(text, color)
+      @@color[RubyDocTest.output_format][color] % text.to_s
+    end
+    
     def run
       prepare_tests
       newline = "\n       "
@@ -91,40 +113,33 @@ module RubyDocTest
           begin
             if t.pass?
               ok += 1
-              status_color = "\e[32m"
-              status = "OK"
+              status = ["OK".center(4), :green]
               detail = nil
             else
               fail += 1
               everything_passed = false
-              status_color = "\e[31m"
-              status = "FAIL"
-              detail =
-                (RubyDocTest.ansi ? status_color : "") +
+              status = ["FAIL".center(4), :red]
+              detail = format_color(
                 "Got: #{t.actual_result}#{newline}Expected: #{t.expected_result}" + newline +
-                "  from #{@file_name}:#{t.first_failed.result.line_number}" +
-                (RubyDocTest.ansi ? "\e[0m" : "")
+                  "  from #{@file_name}:#{t.first_failed.result.line_number}",
+                :red)
               
             end
           rescue EvaluationError => e
             err += 1
-            status_color = "\e[33m"
-            status = "ERR"
-            detail =
-              (RubyDocTest.ansi ? status_color : "") +
-              "#{e.original_exception.class.to_s}: #{e.original_exception.to_s.split("\n").join(newline)}" + newline +
-              "  from #{@file_name}:#{e.statement.line_number}" + newline +
-              e.statement.source_code +
-              (RubyDocTest.ansi ? "\e[0m" : "")
-          end
-          status_formatted =
-            if RubyDocTest.ansi
-              status_color + status.center(4) + "\e[0m"
-            else
-              status.center(4)
+            status = ["ERR".center(4), :yellow]
+            exception_text = e.original_exception.to_s.split("\n").join(newline)
+            if RubyDocTest.output_format == :html
+              exception_text = exception_text.gsub("<", "&lt;").gsub(">", "&gt;")
             end
+            detail = format_color(
+              "#{e.original_exception.class.to_s}: #{exception_text}" + newline +
+                "  from #{@file_name}:#{e.statement.line_number}" + newline +
+                e.statement.source_code,
+              :yellow)
+          end
           puts \
-            "#{status_formatted} | " +
+            "#{format_color(*status)} | " +
             "#{t.description.split("\n").join(newline)}" +
             (detail ? newline + detail : "")
         end

@@ -7,10 +7,17 @@ require "runner"
 module RubyDocTest
   
   class << self
-    attr_accessor :trace, :ansi
+    attr_accessor :trace
+    attr_writer :output_format
     
-    def ansi
-      @ansi == nil ? STDOUT.tty? : @ansi
+    def output_format
+      if @output_format == :ansi or (@output_format.nil? and STDOUT.tty?)
+        :ansi
+      elsif @output_format == :html
+        :html
+      else
+        :plain
+      end
     end
     
     def indent(s, level=4)
