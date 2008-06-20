@@ -130,7 +130,7 @@ module RubyDocTest
         end
       end
       puts \
-        "#{@blocks.size} comparisons, " +
+        "#{@blocks.select{ |b| b.is_a? CodeBlock }.size} comparisons, " +
         "#{@tests.size} doctests, " +
         "#{fail} failures, " +
         "#{err} errors"

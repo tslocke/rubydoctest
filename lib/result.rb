@@ -53,17 +53,14 @@ module RubyDocTest
     # => true
     def matches?(actual_result)
       actual_result = actual_result.inspect
-      normalize_result(expected_result) == normalize_result(actual_result) or
-          # If the expected result looks like a literal, see if they eval to
-          # equal objects. This will often fail.
-          if expected_result =~ /^[:\[{A-Z'"%\/]/
-            begin
-              eval(expected_result, TOPLEVEL_BINDING) ==
-              eval(actual_result, TOPLEVEL_BINDING)
-            rescue Exception
-              false
-            end
-          end
+      
+      normalize_result(expected_result) ==
+      normalize_result(actual_result) \
+        or
+      eval(expected_result, TOPLEVEL_BINDING) ==
+      eval(actual_result, TOPLEVEL_BINDING)
+    rescue Exception
+      false
     end
   end
 end
