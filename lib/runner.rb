@@ -296,7 +296,8 @@ module RubyDocTest
             current_statements = []
           when "doctest_require:"
             $:.unshift(@file_name)
-            require eval(g.value, TOPLEVEL_BINDING, @file_name, g.line_number)
+            ruby = eval(g.value, TOPLEVEL_BINDING, @file_name, g.line_number)
+            require ruby if ruby
             $:.shift
           when "!!!"
             # ignore

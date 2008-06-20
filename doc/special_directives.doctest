@@ -10,7 +10,7 @@ This directive splits your irb sessions into logical "test units" with descripti
 
 	doctest: This is the first test.  Is this document up to date with the code?
 	>> RubyDocTest::SpecialDirective::NAMES
-	=> ["doctest:", "!!!"]
+	=> ["doctest:", "!!!", "doctest_require:"]
 
 Any irb sessions appearing before the first doctest: directive will be included in an all-encompassing "Default Test".  If you have no "doctest:" directives anywhere in your document, then all irb statements will be placed in the "Default Test".
 
@@ -22,17 +22,26 @@ This directive opens an interactive ruby session (irb), in context, so you can p
 	>> neato = "Oh, I see... that makes sense"
 	!!!
 
-Note that you will probably have to test this file using the rubydoctest command, rather than the TextMate shortcut.
+Type 'exit' at the irb prompt to continue through the rest of the tests.
+
+*Note:* You will probably have to test this file using the rubydoctest command, rather than an editor shortcut (such as TextMate's).
 
 ### The "doctest_require:" Directive
 
-Ruby source files are evaluated once before the RubyDocTest::Runner goes through and evaluates each irb session prompt.  This is necessary so that all of the classes, variables, and methods (and so on) that are defined in the file get loaded into memory--thus, they can be tested.
+Ruby source files are evaluated once before the RubyDocTest::Runner goes through and evaluates each irb session prompt.  This is necessary so that all of the classes, variables, and methods (and so on) that are defined in the file get loaded into memory--i.e. it is necessary so they can be tested.
 
 When writing doctests in a ruby source file, however, you may find that it is necessary to include one or more ruby files *before* the whole file is evaluated.  The "doctest_require" directive is just the tool to use.
 
-Ruby DocTest will first attempt to 'require' the specified file relative to the file it is 'require'd from.  For example:
+Ruby DocTest will first attempt to 'require' the specified file relative to the file it is 'require'd from.  For example (ignore the 'nil' for now):
 
-	>> doctest_require "../my-helper"
+	doctest_require: "../my-helper"
+	                 nil
 
 Unlike the regular 'require' method in ruby, 'doctest_require' expects "my-helper.rb" to exist in the directory above the source file's directory.  If it can't be found there, then the regular 'require' rules apply for finding it in other directories around the system.
 
+*Advanced Tip:* Everything after the 'doctest_require:' directive gets evaluated (i.e. it's not just a string).  So if you'd like, you can do other things before the ruby code is eval'ed, too.  In addition, if 'nil' is the last thing in the directive, then no file is 'require'd.  For example:
+
+	doctest_require: $mysql_fixture_file = "test/fixtures/memorypress.sql"
+	                 nil
+
+assigns a string to a global variable, and then returns nil so that doctest_require does not load/require any files.
