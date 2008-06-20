@@ -1,0 +1,38 @@
+Ruby DocTest
+=== 
+
+Special Directives
+---
+
+### The "doctest:" Directive
+
+This directive splits your irb sessions into logical "test units" with descriptions.  For example:
+
+	doctest: This is the first test.  Is this document up to date with the code?
+	>> RubyDocTest::SpecialDirective::NAMES
+	=> ["doctest:", "!!!"]
+
+Any irb sessions appearing before the first doctest: directive will be included in an all-encompassing "Default Test".  If you have no "doctest:" directives anywhere in your document, then all irb statements will be placed in the "Default Test".
+
+### The "!!!" Directive
+
+This directive opens an interactive ruby session (irb), in context, so you can play around with the variables.  If you run this document, you will be prompted at the following line:
+
+	doctest: Try playing with the 'neato' variable in the irb session
+	>> neato = "Oh, I see... that makes sense"
+	!!!
+
+Note that you will probably have to test this file using the rubydoctest command, rather than the TextMate shortcut.
+
+### The ">> doctest_require" Directive
+
+Ruby source files are evaluated once before the RubyDocTest::Runner goes through and evaluates each irb session prompt.  This is necessary so that all of the classes, variables, and methods (and so on) that are defined in the file get loaded into memory--thus, they can be tested.
+
+When writing doctests in a ruby source file, however, you may find that it is necessary to include one or more ruby files *before* the whole file is evaluated.  The "doctest_require" directive is just the tool to use.
+
+Ruby DocTest will first attempt to 'require' the specified file relative to the file it is 'require'd from.  For example:
+
+	>> doctest_require "../my-helper"
+
+Unlike the regular 'require' method in ruby, 'doctest_require' expects "my-helper.rb" to exist in the directory above the source file's directory.  If it can't be found there, then the regular 'require' rules apply for finding it in other directories around the system.
+
