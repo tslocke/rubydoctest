@@ -64,6 +64,7 @@ module RubyDocTest
       
       @src_lines = src.split("\n")
       @groups, @blocks = [], []
+      $rubydoctest = self
     end
     
     # doctest: Using the doctest_require: SpecialDirective should require a file relative to the current one.
@@ -295,10 +296,10 @@ module RubyDocTest
             blocks << CodeBlock.new(current_statements) unless current_statements.empty?
             current_statements = []
           when "doctest_require:"
-            $:.unshift(@file_name)
-            ruby = eval(g.value, TOPLEVEL_BINDING, @file_name, g.line_number)
-            require ruby if ruby
-            $:.shift
+            doctest_require = eval(g.value, TOPLEVEL_BINDING, @file_name, g.line_number)
+            if doctest_require.is_a? String
+              require_relative_to_file_name(doctest_require, @file_name)
+            end
           when "!!!"
             # ignore
           end
@@ -307,6 +308,14 @@ module RubyDocTest
       end
       blocks << CodeBlock.new(current_statements) unless current_statements.empty?
       blocks
+    end
+    
+    def require_relative_to_file_name(file_name, relative_to)
+      load_path = $:.dup
+      $:.unshift File.expand_path(File.join(File.dirname(relative_to), File.dirname(file_name)))
+      require File.basename(file_name)
+    ensure
+      $:.shift
     end
     
     # === Tests

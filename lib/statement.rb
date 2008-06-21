@@ -66,7 +66,7 @@ module RubyDocTest
       @actual_result = eval(sc, TOPLEVEL_BINDING, __FILE__, __LINE__)
     rescue Exception => e
       if RubyDocTest.trace
-        raise
+        raise e.class, e.to_s + "\n" + e.backtrace.first
       else
         raise EvaluationError.new(self, e)
       end

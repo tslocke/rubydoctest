@@ -40,11 +40,16 @@ module RubyDocTest
     # >> cb.pass?
     # => true
     def pass?
-      @passed ||=
-        begin
-          actual_results = @statements.map{ |s| s.evaluate }
-          @result ? @result.matches?(actual_results.last) : true
-        end
+      if @computed
+        @passed
+      else
+        @computed = true
+        @passed =
+          begin
+            actual_results = @statements.map{ |s| s.evaluate }
+            @result ? @result.matches?(actual_results.last) : true
+          end
+      end
     end
     
     def actual_result
@@ -53,6 +58,11 @@ module RubyDocTest
     
     def expected_result
       @result.expected_result
+    end
+    
+    def lines
+      @statements.map{ |s| s.lines }.flatten +
+      @result.lines
     end
   end
 end

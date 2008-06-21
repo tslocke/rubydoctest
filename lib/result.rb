@@ -52,13 +52,10 @@ module RubyDocTest
     # >> r.matches?({:two => 2, :one => 1})
     # => true
     def matches?(actual_result)
-      actual_result = actual_result.inspect
-      
-      normalize_result(expected_result) ==
-      normalize_result(actual_result) \
+      normalize_result(actual_result.inspect) ==
+      normalize_result(expected_result) \
         or
-      eval(expected_result, TOPLEVEL_BINDING) ==
-      eval(actual_result, TOPLEVEL_BINDING)
+      actual_result == eval(expected_result, TOPLEVEL_BINDING)
     rescue Exception
       false
     end

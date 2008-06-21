@@ -1,8 +1,10 @@
-Ruby DocTest
-=== 
+# Ruby DocTest
 
-Special Directives
----
+Comments and tests go together.
+
+## Special Directives
+
+Special directives are keywords that do something outside of the usual eval/result/compare loop.  They have to go at the beginning of a line (or after a #) if Ruby DocTest is to detect it as a special directive.  See below for a list of all special directives.
 
 ### The "doctest:" Directive
 
@@ -26,6 +28,8 @@ Type 'exit' at the irb prompt to continue through the rest of the tests.
 
 *Note:* You will probably have to test this file using the rubydoctest command, rather than an editor shortcut (such as TextMate's).
 
+There is a special variable, $rubydoctest, available inside the irb session which you can use to access the 'current instance' of the RubyDocTest::Runner object.  This is probably only useful for debugging.
+
 ### The "doctest_require:" Directive
 
 Ruby source files are evaluated once before the RubyDocTest::Runner goes through and evaluates each irb session prompt.  This is necessary so that all of the classes, variables, and methods (and so on) that are defined in the file get loaded into memory--i.e. it is necessary so they can be tested.
@@ -45,3 +49,12 @@ Unlike the regular 'require' method in ruby, 'doctest_require' expects "my-helpe
 	                 nil
 
 assigns a string to a global variable, and then returns nil so that doctest_require does not load/require any files.
+
+## Miscellaneous
+
+### The $rubydoctest variable
+
+If you open an irb session using the !!! special directive, a $rubydoctest global variable will be available to the context.  Here is a short list of example uses for this variable:
+
+	puts $rubydoctest.blocks.map{|g| g.lines.join("\n")}.join("\n---\n")
+
