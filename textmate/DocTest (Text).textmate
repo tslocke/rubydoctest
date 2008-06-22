@@ -1,0 +1,66 @@
+{	scopeName = 'text.ruby.doctest';
+	fileTypes = ( 'txt', 'text' );
+	patterns = (
+		{
+			name = 'source.ruby.doctest.description.unindented';
+			begin = '^(doctest:)(.*)';
+			end = '^(?=[^\s]|$)';
+			captures = {
+				1 = { name = 'keyword.ruby.doctest'; };
+				2 = { name = 'comment.ruby.doctest'; };
+			};
+			patterns = (
+				{ include = '#indented_description'; }
+			);
+		},
+		{
+			name = 'source.ruby.doctest.description.indented';
+			begin = '^(\s+)(doctest:)(.*)';
+			end = '^(?!\1)|^(?=\1[^\s])|^(?=\1$)';
+			captures = {
+				2 = { name = 'keyword.ruby.doctest'; };
+				3 = { name = 'comment.ruby.doctest'; };
+			};
+			patterns = (
+				{ include = '#indented_description'; }
+			);
+		},
+		{
+			name = 'source.ruby.doctest.statement.unindented';
+			begin = '^(>>|=>|doctest_require:)';
+			end = '^(?=[^\s]|$)';
+			captures = {
+				1 = { name = 'keyword.ruby.doctest'; };
+			};
+			patterns = (
+				{ include = 'source.ruby.rails'; }
+			);
+		},
+		{
+			name = 'source.ruby.doctest.statement.indented';
+			begin = '^(\s+)(>>|=>|doctest_require:)';
+			end = '^(?!\1)|^(?=\1[^\s])|^(?=\1$)';
+			captures = {
+				2 = { name = 'keyword.ruby.doctest'; };
+			};
+			patterns = (
+				{ include = 'source.ruby.rails'; }
+			);
+		},
+		{
+			name = 'source.ruby.doctest.directive';
+			begin = '^(\s*)(\!\!\!)\s*$';
+			end = '\n';
+			captures = {
+				2 = { name = 'keyword.ruby.doctest'; };
+			};
+		}
+	);
+	repository = {
+		indented_description = {
+			name = 'comment.ruby.doctest';
+			begin = '^(\s+)(.+)';
+			end = '^(?!\1)';
+		};
+	};
+}

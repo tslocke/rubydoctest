@@ -2,10 +2,20 @@
 
 if ARGV.empty?
   puts <<-DIRECTIONS
-  USAGE: rubydoctest [ --html ] [ --plain ] [ --trace ] [ --debugger ] <files>
+  USAGE: rubydoctest [options] <files>
   
   rubydoctest parses Ruby files (.rb) or DocTest files (.doctest) for irb-style
   sessions in comments, and runs the commented sessions as tests.
+  
+  Options:
+    Output Format:
+      --html  - output in HTML format
+      --plain - force output in plain text (no Ansi colors)
+    
+    Debug:
+      --ignore-interactive - do not heed !!! special directives
+      --trace     - turn backtrace on to debug Ruby DocTest
+      --debugger  - include ruby-debug library / gem
   
   See http://github.com/tablatom/rubydoctest/wikis for more information.
   DIRECTIONS
@@ -18,6 +28,7 @@ requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
 ruby_lines = []
 ruby_lines << "RubyDocTest.trace = true;" if options.include?("--trace")
+ruby_lines << "RubyDocTest.ignore_interactive = true;" if options.include?("--ignore-interactive")
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 

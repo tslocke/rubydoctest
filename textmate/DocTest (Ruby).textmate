@@ -1,0 +1,55 @@
+{	scopeName = 'source.ruby.doctest';
+	patterns = (
+		{	name = 'comment.block.documentation.ruby';
+			comment = 'multiline comments';
+			begin = '^=begin';
+			end = '^=end';
+			captures = { 0 = { name = 'punctuation.definition.comment.ruby'; }; };
+			patterns = (
+				{ include = "text.ruby.doctest"; }
+			);
+		},
+		{
+			name = 'source.ruby.doctest.description.commented';
+			begin = '^([ \t]*(#)\s+)(doctest:)(.*)';
+			end = '^(?!\1)|^(?=\1[^\s])|^(?=\1$)';
+			captures = {
+				2 = { name = 'comment.line.number-sign.ruby';};
+				3 = { name = 'keyword.ruby.doctest'; };
+				4 = { name = 'comment.ruby.doctest'; };
+			};
+			patterns = (
+				{ include = '#indented_description'; }
+			);
+		},
+		{
+			name = 'source.ruby.doctest.statement.commented';
+			begin = '^([ \t]*(#)\s+)(>>|=>|doctest_require:)';
+			end = '^(?!\1)|^(?=\1[^\s])|^(?=\1$)';
+			captures = {
+				2 = { name = 'comment.line.number-sign.ruby'; };
+				3 = { name = 'keyword.ruby.doctest'; };
+			};
+			patterns = (
+				{ include = 'source.ruby.rails'; }
+			);
+		},
+		{
+			name = 'source.ruby.doctest.directive';
+			begin = '^([ \t]*(#)\s+)(\!\!\!)\s*$';
+			end = '\n';
+			captures = {
+				2 = { name = 'comment.line.number-sign.ruby'; };
+				3 = { name = 'keyword.ruby.doctest'; };
+			};
+		},
+		{	include = 'source.ruby'; }
+	);
+	repository = {
+		indented_description = {
+			name = 'comment.ruby.doctest';
+			begin = '^([ \t]*#\s+)(.+)';
+			end = '^(?!\1)';
+		};
+	};
+}

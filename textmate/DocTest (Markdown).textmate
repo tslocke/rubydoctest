@@ -1,0 +1,7 @@
+{	scopeName = 'text.html.markdown.ruby.doctest';
+	fileTypes = ( 'doctest', 'rdoctest' );
+	patterns = (
+		{	include = 'text.ruby.doctest'; },
+		{	include = 'text.html.markdown'; }
+	);
+}

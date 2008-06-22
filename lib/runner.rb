@@ -114,7 +114,7 @@ module RubyDocTest
       ok, fail, err = 0, 0, 0
       @tests.each do |t|
         if SpecialDirective === t and t.name == "!!!"
-          start_irb
+          start_irb unless RubyDocTest.ignore_interactive
         else
           begin
             if t.pass?

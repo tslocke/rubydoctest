@@ -1,7 +1,8 @@
 namespace :test do
   desc "Run doctests"
   task :doctest do
-    sh "ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../test/doctest"
+    sh "ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../lib/*.rb"
+    sh "ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../doc/*.doctest"
   end
   
   namespace :doctest do

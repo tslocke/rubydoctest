@@ -1,20 +1,18 @@
 = Ruby DocTest
 
-This work is originally from tablatom and drnic:
+Official repository:
 	* http://github.com/tablatom/rubydoctest
 
-The new repository for 0.5 and up is at:
-	* http://github.com/canadaduane/rubydoctest
+Wiki documentation:
+	* http://github.com/tablatom/rubydoctest/wikis
 
 == Description:
 
 Ruby version of Python's doctest tool, but a bit different. Ruby DocTest
-allows you to put your tests right in with your Ruby code. It also allows you
-to put tests in a separate documentation file and have the tests run
-automatically.
+allows you to:
 
-There are two fundamental "modes" that Ruby DocTest works in: ruby source file
-mode (":ruby") and doctest mode (":doctest").  See the examples section below.
+	1. Write tests in irb format and keep them as comments next to your Ruby code.
+	2. Write markdown documents with irb format tests embedded in them.
 
 == Synopsis:
 
@@ -25,7 +23,8 @@ rubydoctest comes as an executable that takes a list of files:
 
 == Examples:
 	
-Here is how you might use RubyDocTest within an .rb file:
+Here is how you might use RubyDocTest within a ruby source file (say called five.rb):
+
 	# doctest: Add 5 and 5 to get 10
 	# >> five_and_five
 	# => 10
@@ -47,28 +46,7 @@ Here is an example doctest file (say called simple.doctest):
 		>> 1 + 2
 		=> 4
 
-	Test a some multiline statements
-
-		>> 
-			class Person
-				attr_accessor :name
-			end
-
-		>> Person
-		=> Person
-		>> p = Person.new
-		>> p.name = "Tom"
-		>> p.name
-		=> "Tom"
-
-
-		>> "a
-			b"
-		=> "a\nb"
-
-		>> 1 +
-		?> 2
-		=> 3
+See the doc directory of this project for more .doctest examples and documentation.
 
 == Installation:
 
@@ -78,7 +56,7 @@ Major releases:
 
 Build from source:
 
-	git clone git://github.com/canadaduane/rubydoctest.git
+	git clone git://github.com/tablatom/rubydoctest.git
 	cd rubydoctest
 	rake manifest:refresh && rake install
 
