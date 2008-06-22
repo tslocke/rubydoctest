@@ -1,15 +1,13 @@
 require 'rubydoctest/version'
 
-AUTHOR = ['Tom Locke', 'Dr Nic Williams']  # can also be an array of Authors
-EMAIL = "drnicwilliams@gmail.com"
+AUTHOR = ['Duane Johnson', 'Tom Locke', 'Dr Nic Williams']  # can also be an array of Authors
+EMAIL = "duane.johnson@gmail.com"
 DESCRIPTION = "Ruby version of Python's doctest tool, but a bit different."
 GEM_NAME = 'rubydoctest' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'rubydoctest' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
-EXTRA_DEPENDENCIES = [
-#  ['activesupport', '>= 1.3.1']
-]    # An array of rubygem dependencies [name, version]
+EXTRA_DEPENDENCIES = []
 
 @config_file = "~/.rubyforge/user-config.yml"
 @config = nil

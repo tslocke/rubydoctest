@@ -4,10 +4,12 @@ Manifest.txt
 PostInstall.txt
 README.txt
 Rakefile
+Ruby DocTest.tmproj
 bin/rubydoctest
 config/hoe.rb
 config/requirements.rb
 lib/code_block.rb
+lib/doctest_require.rb
 lib/lines.rb
 lib/result.rb
 lib/rubydoctest.rb
@@ -27,10 +29,9 @@ tasks/deployment.rake
 tasks/doctests.rake
 tasks/environment.rake
 tasks/website.rake
-test/inline.rb
-test/simple.doctest
-test/test_helper.rb
-test/test_rubydoctest.rb
+textmate/DocTest (Markdown).textmate
+textmate/DocTest (Ruby).textmate
+textmate/DocTest (Text).textmate
 website/index.html
 website/index.txt
 website/javascripts/rounded_corners_lite.inc.js
