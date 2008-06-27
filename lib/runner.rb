@@ -106,6 +106,15 @@ module RubyDocTest
       @@color[RubyDocTest.output_format][color] % text.to_s
     end
     
+    def escape(text)
+      case RubyDocTest.output_format
+      when :html
+        text.gsub("<", "&lt;").gsub(">", "&gt;")
+      else
+        text
+      end
+    end
+    
     def run
       prepare_tests
       newline = "\n       "
@@ -126,7 +135,7 @@ module RubyDocTest
               everything_passed = false
               status = ["FAIL".center(4), :red]
               detail = format_color(
-                "Got: #{t.actual_result}#{newline}Expected: #{t.expected_result}" + newline +
+                "Got: #{escape t.actual_result}#{newline}Expected: #{escape t.expected_result}" + newline +
                   "  from #{@file_name}:#{t.first_failed.result.line_number}",
                 :red)
               
@@ -136,12 +145,11 @@ module RubyDocTest
             status = ["ERR".center(4), :yellow]
             exception_text = e.original_exception.to_s.split("\n").join(newline)
             detail = format_color(
-              "#{e.original_exception.class.to_s}: #{exception_text}" + newline +
+              "#{escape e.original_exception.class.to_s}: #{escape exception_text}" + newline +
                 "  from #{@file_name}:#{e.statement.line_number}" + newline +
                 e.statement.source_code,
               :yellow)
           end
-          detail.gsub!("<", "&lt;") if RubyDocTest.output_format == :html
           puts \
             "#{format_color(*status)} | " +
             "#{t.description.split("\n").join(newline)}" +
