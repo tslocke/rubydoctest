@@ -135,15 +135,13 @@ module RubyDocTest
             err += 1
             status = ["ERR".center(4), :yellow]
             exception_text = e.original_exception.to_s.split("\n").join(newline)
-            if RubyDocTest.output_format == :html
-              exception_text = exception_text.gsub("<", "&lt;").gsub(">", "&gt;")
-            end
             detail = format_color(
               "#{e.original_exception.class.to_s}: #{exception_text}" + newline +
                 "  from #{@file_name}:#{e.statement.line_number}" + newline +
                 e.statement.source_code,
               :yellow)
           end
+          detail.gsub!("<", "&lt;") if RubyDocTest.output_format == :html
           puts \
             "#{format_color(*status)} | " +
             "#{t.description.split("\n").join(newline)}" +
