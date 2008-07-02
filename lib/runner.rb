@@ -117,14 +117,14 @@ module RubyDocTest
     
     def run
       prepare_tests
-      newline = "\n       "
+      newline = "\n           "
       everything_passed = true
       puts "=== Testing '#{@file_name}'..."
       ok, fail, err = 0, 0, 0
-      @tests.each do |t|
+      @tests.each_with_index do |t, index|
         if SpecialDirective === t and t.name == "!!!"
           start_irb unless RubyDocTest.ignore_interactive
-        else
+        elsif RubyDocTest.tests.nil? or RubyDocTest.tests.include?(index + 1)
           begin
             if t.pass?
               ok += 1
@@ -151,6 +151,7 @@ module RubyDocTest
               :yellow)
           end
           puts \
+            "#{((index + 1).to_s + ".").ljust(3)} " +
             "#{format_color(*status)} | " +
             "#{t.description.split("\n").join(newline)}" +
             (detail ? newline + detail : "")

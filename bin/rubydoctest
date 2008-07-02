@@ -1,13 +1,21 @@
 #!/usr/bin/env ruby
 
-if ARGV.empty?
+options, files = ARGV.partition{ |a| a =~ /^-/ }
+
+if ARGV.empty? or options.include?("-h") or options.include?("--help")
+  require 'rubydoctest/version'
   puts <<-DIRECTIONS
-  USAGE: rubydoctest [options] <files>
+Ruby DocTest #{Rubydoctest::VERSION::STRING}
+USAGE: rubydoctest [options] <files>
   
   rubydoctest parses Ruby files (.rb) or DocTest files (.doctest) for irb-style
   sessions in comments, and runs the commented sessions as tests.
   
   Options:
+    General:
+      --help  - show this usage / help information
+      -t<n>   - only run test number n, e.g. -t1 -t3
+    
     Output Format:
       --html  - output in HTML format
       --plain - force output in plain text (no Ansi colors)
@@ -22,13 +30,14 @@ if ARGV.empty?
   exit 0
 end
 
-options, files = ARGV.partition{ |a| a =~ /^--/ }
-
 requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
 ruby_lines = []
 ruby_lines << "RubyDocTest.trace = true;" if options.include?("--trace")
 ruby_lines << "RubyDocTest.ignore_interactive = true;" if options.include?("--ignore-interactive")
+
+tests = options.map{ |o| o =~ /^-t(\d+)/; $1 }.compact
+ruby_lines << "RubyDocTest.tests = #{tests.inspect};" if tests.size > 0
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 

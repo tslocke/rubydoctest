@@ -1,3 +1,9 @@
+== 1.0.0 2008-06-23
+
+* Added doctest: and doctest_require: special directives.
+* Bug fixes.
+* Documentation and wiki.
+
 == 0.3.0 2008-06-17
 
 * Added ability to put doctest code within .rb file comments

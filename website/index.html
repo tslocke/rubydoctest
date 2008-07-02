@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>
-      rubydoctest
+      Ruby DocTest
   </title>
   <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
 <style>
@@ -30,7 +30,7 @@
 <body>
 <div id="main">
 
-    <h1>rubydoctest</h1>
+    <h1>Ruby DocTest</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/rubydoctest"; return false'>
       <p>Get Version</p>
       <a href="http://rubyforge.org/projects/rubydoctest" class="numbers">1.0.0</a>
@@ -41,82 +41,35 @@
 	<h2>What</h2>
 
 
+	<p>Ruby DocTest is a tool that lets you put irb-style tests in your documentation. It’s similar to Python’s doctest, but different in several ways.</p>
+
+
 	<h2>Installing</h2>
 
 
 	<p><pre class='syntax'><span class="ident">sudo</span> <span class="ident">gem</span> <span class="ident">install</span> <span class="ident">rubydoctest</span></pre></p>
 
 
-	<h2>The basics</h2>
+	<h2>Wiki, Documentation, Examples</h2>
 
 
-	<h2>Demonstration of usage</h2>
-
-
-	<h2>Forum</h2>
-
-
-	<p><a href="http://groups.google.com/group/rubydoctest">http://groups.google.com/group/rubydoctest</a></p>
-
-
-	<p><span class="caps">TODO</span> &#8211; create Google Group &#8211; rubydoctest</p>
+	<p>See the <a href="http://github.com/tablatom/rubydoctest/wikis">github wiki</a></p>
 
 
 	<h2>How to submit patches</h2>
 
 
-	<p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a> and for section <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8b-google-groups">8b: Submit patch to Google Groups</a>, use the Google Group above.</p>
+	<p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a>.</p>
 
 
-	<p><span class="caps">TODO</span> &#8211; pick <span class="caps">SVN</span> or Git instructions</p>
+	<p>The git repository is <code>http://github.com/tablatom/rubydoctest/tree/master</code> for anonymous access.</p>
 
-
-	<p>The trunk repository is <code>svn://rubyforge.org/var/svn/rubydoctest/trunk</code> for anonymous access.</p>
-
-
-	<p><span class="caps">OOOORRRR</span></p>
-
-
-	<p>You can fetch the source from either:</p>
-
-
-	<ul>
-	<li>rubyforge: <span class="caps">MISSING IN ACTION</span></li>
-	</ul>
-
-
-	<p><span class="caps">TODO</span> &#8211; You can not created a RubyForge project, OR have not run <code>rubyforge config</code>
-yet to refresh your local rubyforge data with this projects&#8217; id information.</p>
-
-
-	<p>When you do this, this message will magically disappear!</p>
-
-
-	<p>Or you can hack website/index.txt and make it all go away!!</p>
-
-
-	<ul>
-	<li>github: <a href="http://github.com/GITHUB_USERNAME/rubydoctest/tree/master">http://github.com/GITHUB_USERNAME/rubydoctest/tree/master</a></li>
-	</ul>
-
-
-<pre>git clone git://github.com/GITHUB_USERNAME/rubydoctest.git</pre>
-
-	<p><span class="caps">TODO</span> &#8211; add &#8220;github_username: username&#8221; to ~/.rubyforge/user-config.yml and newgem will reuse it for future projects.</p>
-
-
-	<ul>
-	<li>gitorious: <a href="git://gitorious.org/rubydoctest/mainline.git">git://gitorious.org/rubydoctest/mainline.git</a></li>
-	</ul>
-
-
-<pre>git clone git://gitorious.org/rubydoctest/mainline.git</pre>
 
 	<h3>Build and test instructions</h3>
 
 
 <pre>cd rubydoctest
-rake test
+rake test:doctest
 rake install_gem</pre>
 
 	<h2>License</h2>
@@ -128,9 +81,9 @@ rake install_gem</pre>
 	<h2>Contact</h2>
 
 
-	<p>Comments are welcome. Send an email to <a href="mailto:FIXME"><span class="caps">FIXME</span> full name</a> email via the <a href="http://groups.google.com/group/rubydoctest">forum</a></p>
+	<p>Comments are welcome. Send an email to <a href="mailto:duane.johnson@gmail.com">Duane Johnson</a>.</p>
     <p class="coda">
-      <a href="mailto:duane.johnson@gmail.com">Duane Johnson</a>, 17th June 2008<br>
+      <a href="mailto:duane.johnson@gmail.com">Duane Johnson</a>, 23rd June 2008<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
