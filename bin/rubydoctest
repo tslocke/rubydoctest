@@ -24,6 +24,7 @@ USAGE: rubydoctest [options] <files>
       --ignore-interactive - do not heed !!! special directives
       --trace     - turn backtrace on to debug Ruby DocTest
       --debugger  - include ruby-debug library / gem
+      --require=</path/to/require>,</another/path/to/require> - eg. --require=config/environment.rb
   
   See http://github.com/tablatom/rubydoctest/wikis for more information.
   DIRECTIONS
@@ -32,6 +33,11 @@ end
 
 requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
+
+if options.detect {|opt| opt =~ /^--require=(.+)/}
+  requires << $1.split(",")
+end
+
 ruby_lines = []
 ruby_lines << "RubyDocTest.trace = true;" if options.include?("--trace")
 ruby_lines << "RubyDocTest.ignore_interactive = true;" if options.include?("--ignore-interactive")
