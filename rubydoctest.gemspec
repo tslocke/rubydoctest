@@ -1,14 +1,14 @@
 Gem::Specification.new do |s|
-  s.name = %q{rubydoctest}
-  s.version = "1.0.0"
+  s.name = "rubydoctest"
+  s.version = "1.0.1"
 
   s.specification_version = 2 if s.respond_to? :specification_version=
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Duane Johnson", "Tom Locke", "Dr Nic Williams"]
-  s.date = %q{2008-06-21}
-  s.default_executable = %q{rubydoctest}
-  s.description = %q{Ruby version of Python's doctest tool, but a bit different.}
+  s.date = "2008-12-06"
+  s.default_executable = "rubydoctest"
+  s.description = "Ruby version of Python's doctest tool, but a bit different."
   s.email = ["duane.johnson@gmail.com"]
   s.executables = ["rubydoctest"]
   s.extra_rdoc_files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.txt", "website/index.txt"]
