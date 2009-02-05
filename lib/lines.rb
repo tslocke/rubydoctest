@@ -117,7 +117,7 @@ module RubyDocTest
     # => " # "
     def indentation(doc_lines = @doc_lines, line_index = @line_index)
       if doc_lines[line_index]
-        doc_lines[line_index][/^(\s*#\s*|\s*)(\?>\s)?/]
+        doc_lines[line_index][/^(\s*#\s*|\s*)(\?>\s?)?/]
       else
         ""
       end
