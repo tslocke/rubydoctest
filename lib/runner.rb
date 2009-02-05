@@ -302,15 +302,23 @@ module RubyDocTest
           when "doctest:"
             blocks << CodeBlock.new(current_statements) unless current_statements.empty?
             current_statements = []
+            blocks << g
           when "doctest_require:"
             doctest_require = eval(g.value, TOPLEVEL_BINDING, @file_name, g.line_number)
             if doctest_require.is_a? String
               require_relative_to_file_name(doctest_require, @file_name)
             end
+            blocks << g
           when "!!!"
             # ignore
+            unless RubyDocTest.ignore_interactive
+              fake_statement = Object.new
+              def fake_statement.evaluate
+                start_irb
+              end
+              current_statements << fake_statement
+            end
           end
-          blocks << g
         end
       end
       blocks << CodeBlock.new(current_statements) unless current_statements.empty?
