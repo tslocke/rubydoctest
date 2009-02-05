@@ -320,8 +320,9 @@ module RubyDocTest
             # ignore
             unless RubyDocTest.ignore_interactive
               fake_statement = Object.new
-              def fake_statement.evaluate
-                start_irb
+              runner = self
+              (class << fake_statement; self; end).send(:define_method, :evaluate) do
+                runner.start_irb
               end
               current_statements << fake_statement
             end
