@@ -134,8 +134,15 @@ module RubyDocTest
               fail += 1
               everything_passed = false
               status = ["FAIL".center(4), :red]
+
+              result_raw = t.first_failed.actual_result
+              got = if result_raw =~ /\n$/ && result_raw.count("\n") > 1
+                      "Got: <<-__END__\n#{result_raw}__END__\n       "
+                    else
+                      "Got:      #{t.actual_result}#{newline}"
+                    end
               detail = format_color(
-                "Got: #{escape t.actual_result}#{newline}Expected: #{escape t.expected_result}" + newline +
+                "#{got}Expected: #{t.expected_result}" + newline +
                   "  from #{@file_name}:#{t.first_failed.result.line_number}",
                 :red)
               
