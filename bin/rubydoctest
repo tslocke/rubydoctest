@@ -2,6 +2,9 @@
 
 options, files = ARGV.partition{ |a| a =~ /^-/ }
 
+runpath=File.dirname(File.dirname(__FILE__))
+$: << runpath+'/lib'
+
 if ARGV.empty? or options.include?("-h") or options.include?("--help")
   require 'rubydoctest/version'
   puts <<-DIRECTIONS
