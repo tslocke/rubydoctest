@@ -62,8 +62,14 @@ module RubyDocTest
     # => :ok
     def evaluate
       sc = source_code.gsub("__FILE__", @file_name.inspect)
-      # puts "EVAL: #{sc}"
+      if RubyDocTest.verbose
+        puts "EVAL: #{sc}"
+      end
       @actual_result = eval(sc, TOPLEVEL_BINDING, __FILE__, __LINE__)
+      if RubyDocTest.verbose
+        puts "RESULT: #{@actual_result}"
+      end
+      @actual_result
     rescue Exception => e
       if RubyDocTest.trace
         raise e.class, e.to_s + "\n" + e.backtrace.first

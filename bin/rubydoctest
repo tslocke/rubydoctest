@@ -24,6 +24,7 @@ USAGE: rubydoctest [options] <files>
       --ignore-interactive - do not heed !!! special directives
       --trace     - turn backtrace on to debug Ruby DocTest
       --debugger  - include ruby-debug library / gem
+      --verbose   - print more (useful only with --plain)
   
   See http://github.com/tablatom/rubydoctest/wikis for more information.
   DIRECTIONS
@@ -34,6 +35,7 @@ requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
 ruby_lines = []
 ruby_lines << "RubyDocTest.trace = true;" if options.include?("--trace")
+ruby_lines << "RubyDocTest.verbose = true;" if options.include?("--verbose") or options.include?("-v")
 ruby_lines << "RubyDocTest.ignore_interactive = true;" if options.include?("--ignore-interactive")
 
 tests = options.map{ |o| o =~ /^-t(\d+)/; $1 }.compact
