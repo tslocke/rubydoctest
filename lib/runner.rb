@@ -156,6 +156,9 @@ module RubyDocTest
                 "  from #{@file_name}:#{e.statement.line_number}" + newline +
                 e.statement.source_code,
               :yellow)
+            if RubyDocTest.verbose
+              detail += format_color(newline + e.original_exception.backtrace.join("\n"), :red)
+            end
           end
           puts \
             "#{((index + 1).to_s + ".").ljust(3)} " +
