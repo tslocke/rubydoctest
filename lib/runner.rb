@@ -336,6 +336,9 @@ module RubyDocTest
     def require_relative_to_file_name(file_name, relative_to)
       load_path = $:.dup
       $:.unshift File.expand_path(File.join(File.dirname(relative_to), File.dirname(file_name)))
+      if RubyDocTest.verbose
+        puts "doctest_require: [#{File.expand_path(File.join(File.dirname(relative_to), File.dirname(file_name)))}] #{File.basename(file_name)}"
+      end
       require File.basename(file_name)
     ensure
       $:.shift
