@@ -44,8 +44,11 @@ ruby_lines << "RubyDocTest.tests = #{tests.inspect};" if tests.size > 0
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 
 def files_runner(command, files, requires, lines)
-  files.reverse_each do |f|
-    system %(#{command} -e "#{requires} #{lines.join(" ")} RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run")
+  files.reverse.detect do |f|
+    cmd = %(#{command} -e "#{requires} #{lines.join(" ")} exit(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run ? 0 : 1)")
+    if ! system(cmd)
+      exit(1)
+    end
   end
 end
 
@@ -60,3 +63,4 @@ elsif options.include?("--html")
 else
   files_runner("ruby", files, requires, ruby_lines)
 end
+exit(0)
