@@ -12,7 +12,7 @@ This directive splits your irb sessions into logical "test units" with descripti
 
 	doctest: This is the first test.  Is this document up to date with the code?
 	>> RubyDocTest::SpecialDirective::NAMES
-	=> ["doctest:", "!!!", "doctest_require:"]
+	=> ["doctest:", "it:", "!!!", "doctest_require:"]
 
 Any irb sessions appearing before the first doctest: directive will be included in an all-encompassing "Default Test".  If you have no "doctest:" directives anywhere in your document, then all irb statements will be placed in the "Default Test".
 
