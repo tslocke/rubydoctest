@@ -21,6 +21,7 @@ Any irb sessions appearing before the first doctest: directive will be included 
 This directive opens an interactive ruby session (irb), in context, so you can play around with the variables.  If you run this document, you will be prompted at the following line:
 
 	doctest: Try playing with the 'neato' variable in the irb session
+        doctest: Thanks for playing with 'neato'
 	>> neato = "Oh, I see... that makes sense"
 	!!!
 
