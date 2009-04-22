@@ -45,8 +45,18 @@ requires = requires.map {|lib| "require '#{lib}'; "}.join
 
 def files_runner(command, files, requires, lines)
   files.reverse.detect do |f|
-    cmd = %(#{command} -e "#{requires} #{lines.join(" ")} exit(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run ? 0 : 1)")
-    if ! system(cmd)
+    cmd = <<END_CMD
+#{requires} #{lines.join(" ")}
+
+module Kernel
+  # IRB redefines exit
+  alias_method :our_exit, :exit
+end
+
+our_exit(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run ? 0 : 1)
+END_CMD
+
+    if ! system(%(#{command} -e "#{cmd}"))
       exit(1)
     end
   end
