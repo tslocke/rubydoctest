@@ -4,7 +4,6 @@ Manifest.txt
 PostInstall.txt
 README.txt
 Rakefile
-Ruby DocTest.tmproj
 bin/rubydoctest
 config/hoe.rb
 config/requirements.rb
