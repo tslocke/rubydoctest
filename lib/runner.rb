@@ -149,6 +149,7 @@ module RubyDocTest
             end
           rescue EvaluationError => e
             err += 1
+            everything_passed = false
             status = ["ERR".center(4), :yellow]
             exception_text = e.original_exception.to_s.split("\n").join(newline)
             detail = format_color(
