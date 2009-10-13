@@ -13,8 +13,10 @@ USAGE: rubydoctest [options] <files>
   
   Options:
     General:
-      --help  - show this usage / help information
-      -t<n>   - only run test number n, e.g. -t1 -t3
+      --help   - show this usage / help information
+      --single - run all tests in the same ruby environment
+      -r<file> - filename to require (use one -r switch per file)
+      -t<n>    - only run test number n, e.g. -t1 -t3
     
     Output Format:
       --html  - output in HTML format
@@ -30,8 +32,12 @@ USAGE: rubydoctest [options] <files>
   exit 0
 end
 
+single = options.include?("--single")
+
 requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
+requires.concat options.select{|o|o=~/^-r/}.map{|o|o.gsub(/^-r\s*/,"")}
+
 ruby_lines = []
 ruby_lines << "RubyDocTest.trace = true;" if options.include?("--trace")
 ruby_lines << "RubyDocTest.ignore_interactive = true;" if options.include?("--ignore-interactive")
@@ -41,20 +47,29 @@ ruby_lines << "RubyDocTest.tests = #{tests.inspect};" if tests.size > 0
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 
-def files_runner(command, files, requires, lines)
-  files.reverse_each do |f|
-    system %(#{command} -e "#{requires} #{lines.join(" ")} RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run")
+def files_runner(command, files, requires, lines, single=false)
+  if single
+    script = %(#{command} -e "#{requires} #{lines.join(" ")} )
+    files.reverse_each do |f|
+      script << %(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run; )
+    end
+    script << %(nil")
+    system script
+  else
+    files.reverse_each do |f|
+      system %(#{command} -e "#{requires} #{lines.join(" ")} RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run")
+    end
   end
 end
 
 if options.include?("--plain")
   ruby_lines << "RubyDocTest.output_format = :plain;" 
-  files_runner("ruby", files, requires, ruby_lines)
+  files_runner("ruby", files, requires, ruby_lines, single)
 elsif options.include?("--html")
   ruby_lines << "RubyDocTest.output_format = :html;" 
   puts "<html><body><pre>"
-  files_runner("ruby", files, requires, ruby_lines)
+  files_runner("ruby", files, requires, ruby_lines, single)
   puts "</pre></body></html>"
 else
-  files_runner("ruby", files, requires, ruby_lines)
+  files_runner("ruby", files, requires, ruby_lines, single)
 end
