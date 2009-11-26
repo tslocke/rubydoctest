@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'rbconfig'
+RUBY = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name']).sub(/.*\s.*/m, '"\&"')
+
 options, files = ARGV.partition{ |a| a =~ /^-/ }
 
 if ARGV.empty? or options.include?("-h") or options.include?("--help")
@@ -77,6 +80,6 @@ elsif options.include?("--html")
   files_runner("ruby", files, requires, ruby_lines)
   puts "</pre></body></html>"
 else
-  files_runner("ruby", files, requires, ruby_lines)
+  files_runner(RUBY, files, requires, ruby_lines)
 end
 exit(0)
