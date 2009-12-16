@@ -16,8 +16,9 @@ USAGE: rubydoctest [options] <files>
   
   Options:
     General:
-      --help  - show this usage / help information
-      -t<n>   - only run test number n, e.g. -t1 -t3
+      --help   - show this usage / help information
+      --single - run all tests in the same ruby environment
+      -t<n>    - only run test number n, e.g. -t1 -t3
     
     Output Format:
       --html  - output in HTML format
@@ -34,6 +35,8 @@ USAGE: rubydoctest [options] <files>
   DIRECTIONS
   exit 0
 end
+
+single = options.include?("--single")
 
 requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
@@ -52,9 +55,8 @@ ruby_lines << "RubyDocTest.tests = #{tests.inspect};" if tests.size > 0
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 
-def files_runner(command, files, requires, lines)
-  files.reverse.detect do |f|
-    cmd = <<END_CMD
+def files_runner(command, files, requires, lines, single)
+  preamble = <<END_CMD
 #{requires} #{lines.join(" ")}
 
 module Kernel
@@ -62,24 +64,38 @@ module Kernel
   alias_method :our_exit, :exit
 end
 
-our_exit(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run ? 0 : 1)
 END_CMD
-
+  if single
+    cmd = preamble + "our_exit("
+    cmd << files.reverse.map do |f|
+      %(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run )
+    end.join("&& ")
+    cmd << "? 0 : 1)"
     if ! system(%(#{command} -e "#{cmd}"))
       exit(1)
+    end
+  else
+    files.reverse.detect do |f|
+      cmd = preamble + <<END_CMD2
+our_exit(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run ? 0 : 1)
+END_CMD2
+
+      if ! system(%(#{command} -e "#{cmd}"))
+        exit(1)
+      end
     end
   end
 end
 
 if options.include?("--plain")
   ruby_lines << "RubyDocTest.output_format = :plain;" 
-  files_runner("ruby", files, requires, ruby_lines)
+  files_runner(RUBY, files, requires, ruby_lines, single)
 elsif options.include?("--html")
   ruby_lines << "RubyDocTest.output_format = :html;" 
   puts "<html><body><pre>"
-  files_runner("ruby", files, requires, ruby_lines)
+  files_runner(RUBY, files, requires, ruby_lines, single)
   puts "</pre></body></html>"
 else
-  files_runner(RUBY, files, requires, ruby_lines)
+  files_runner(RUBY, files, requires, ruby_lines, single)
 end
 exit(0)
