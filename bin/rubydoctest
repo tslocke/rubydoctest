@@ -22,7 +22,7 @@ USAGE: rubydoctest [options] <files>
     
     Output Format:
       --html  - output in HTML format
-      --plain - force output in plain text (no Ansi colors)
+      --plain - force output in plain text (no Ansi colors) [windows default]
     
     Debug:
       --ignore-interactive - do not heed !!! special directives
@@ -87,7 +87,7 @@ END_CMD2
   end
 end
 
-if options.include?("--plain")
+if options.include?("--plain") or RUBY_PLATFORM =~ /mswin|mingw/
   ruby_lines << "RubyDocTest.output_format = :plain;" 
   files_runner(RUBY, files, requires, ruby_lines, single)
 elsif options.include?("--html")
