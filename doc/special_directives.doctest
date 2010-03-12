@@ -12,7 +12,7 @@ This directive splits your irb sessions into logical "test units" with descripti
 
 	doctest: This is the first test.  Is this document up to date with the code?
 	>> RubyDocTest::SpecialDirective::NAMES
-	=> ["doctest:", "!!!", "doctest_require:"]
+	=> ["doctest:", "it:", "!!!", "doctest_require:"]
 
 Any irb sessions appearing before the first doctest: directive will be included in an all-encompassing "Default Test".  If you have no "doctest:" directives anywhere in your document, then all irb statements will be placed in the "Default Test".
 
@@ -21,6 +21,7 @@ Any irb sessions appearing before the first doctest: directive will be included 
 This directive opens an interactive ruby session (irb), in context, so you can play around with the variables.  If you run this document, you will be prompted at the following line:
 
 	doctest: Try playing with the 'neato' variable in the irb session
+        doctest: Thanks for playing with 'neato'
 	>> neato = "Oh, I see... that makes sense"
 	!!!
 

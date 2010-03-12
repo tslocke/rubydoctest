@@ -78,21 +78,13 @@ module RubyDocTest
     # => 0..1
     def range(doc_lines = @doc_lines, start_index = @line_index)
       end_index = start_index
-      if doc_lines[start_index] =~ /<<-([a-zA-Z0-9_])/
-        end_marker = $1
-        remaining_lines(doc_lines, start_index + 1).each do |current_line|
+      idt = indentation(doc_lines, start_index)
+      # Find next lines that are blank, or have indentation more than the first line
+      remaining_lines(doc_lines, start_index + 1).each do |current_line|
+        if current_line =~ /^(#{Regexp.escape(idt)}(\s+|\?>\s)|\s*$)/
           end_index += 1
-          break if current_line.strip == end_marker
-        end
-      else
-        idt = indentation(doc_lines, start_index)
-        # Find next lines that are blank, or have indentation more than the first line
-        remaining_lines(doc_lines, start_index + 1).each do |current_line|
-          if current_line =~ /^(#{Regexp.escape(idt)}(\s+|\?>\s?)|\s*$)/
-            end_index += 1
-          else
-            break
-          end
+        else
+          break
         end
       end
       # Compute the range from what we found

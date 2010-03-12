@@ -149,6 +149,7 @@ module RubyDocTest
             end
           rescue EvaluationError => e
             err += 1
+            everything_passed = false
             status = ["ERR".center(4), :yellow]
             exception_text = e.original_exception.to_s.split("\n").join(newline)
             detail = format_color(
@@ -156,6 +157,9 @@ module RubyDocTest
                 "  from #{@file_name}:#{e.statement.line_number}" + newline +
                 e.statement.source_code,
               :yellow)
+            if RubyDocTest.verbose
+              detail += format_color(newline + e.original_exception.backtrace.join("\n"), :red)
+            end
           end
           puts \
             "#{((index + 1).to_s + ".").ljust(3)} " +
@@ -306,7 +310,7 @@ module RubyDocTest
           current_statements = []
         when SpecialDirective
           case g.name
-          when "doctest:"
+          when "doctest:", "it:"
             blocks << CodeBlock.new(current_statements) unless current_statements.empty?
             current_statements = []
             blocks << g
@@ -336,6 +340,9 @@ module RubyDocTest
     def require_relative_to_file_name(file_name, relative_to)
       load_path = $:.dup
       $:.unshift File.expand_path(File.join(File.dirname(relative_to), File.dirname(file_name)))
+      if RubyDocTest.verbose
+        puts "doctest_require: [#{File.expand_path(File.join(File.dirname(relative_to), File.dirname(file_name)))}] #{File.basename(file_name)}"
+      end
       require File.basename(file_name)
     ensure
       $:.shift
@@ -368,6 +375,18 @@ module RubyDocTest
     # 
     # >> r.tests.first.code_blocks.size
     # => 2
+    #
+    # doctest: When using the "it:" directive, it should re-append "it" to the description;
+    # >> r = RubyDocTest::Runner.new("it: should behave\n>> t = 1\n>> t + 2\n=> 3\n>> u = 1", "test.doctest")
+    # >> r.prepare_tests
+    # >> r.tests.size
+    # => 1
+    #
+    # >> r.tests.first.description
+    # => "it should behave"
+    #
+    # >> r.tests.first.code_blocks.size
+    # => 2
     def organize_tests(blocks = @blocks)
       tests = []
       assigned_blocks = nil
@@ -381,6 +400,9 @@ module RubyDocTest
           when "doctest:"
             assigned_blocks = []
             tests << Test.new(g.value, assigned_blocks)
+          when "it:"
+            assigned_blocks = []
+            tests << Test.new("it #{g.value}", assigned_blocks)
           when "!!!"
             tests << g
           end

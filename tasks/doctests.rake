@@ -1,8 +1,9 @@
 namespace :test do
   desc "Run doctests"
   task :doctest do
-    sh "ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../lib/*.rb"
-    sh "ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../doc/*.doctest"
+    system("ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../lib/*.rb") &&
+      system("ruby #{File.dirname(__FILE__)}/../bin/rubydoctest #{File.dirname(__FILE__)}/../doc/*.doctest")
+    exit($?.exitstatus)
   end
   
   namespace :doctest do

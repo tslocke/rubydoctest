@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'rbconfig'
+RUBY = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name']).sub(/.*\s.*/m, '"\&"')
+
 options, files = ARGV.partition{ |a| a =~ /^-/ }
 
 runpath=File.dirname(File.dirname(__FILE__))
@@ -18,17 +21,18 @@ USAGE: rubydoctest [options] <files>
     General:
       --help   - show this usage / help information
       --single - run all tests in the same ruby environment
-      -r<file> - filename to require (use one -r switch per file)
       -t<n>    - only run test number n, e.g. -t1 -t3
     
     Output Format:
       --html  - output in HTML format
-      --plain - force output in plain text (no Ansi colors)
+      --plain - force output in plain text (no Ansi colors) [windows default]
     
     Debug:
       --ignore-interactive - do not heed !!! special directives
       --trace     - turn backtrace on to debug Ruby DocTest
       --debugger  - include ruby-debug library / gem
+      --verbose   - print more (useful only with --plain)
+      --require=</path/to/require>,</another/path/to/require> - eg. --require=config/environment.rb
   
   See http://github.com/tablatom/rubydoctest/wikis for more information.
   DIRECTIONS
@@ -39,10 +43,14 @@ single = options.include?("--single")
 
 requires = ['rubygems', File.dirname(__FILE__) + "/../lib/rubydoctest"]
 requires << 'ruby-debug' if options.include?("--debugger")
-requires.concat options.select{|o|o=~/^-r/}.map{|o|o.gsub(/^-r\s*/,"")}
+
+if options.detect {|opt| opt =~ /^--require=(.+)/}
+  requires << $1.split(",")
+end
 
 ruby_lines = []
 ruby_lines << "RubyDocTest.trace = true;" if options.include?("--trace")
+ruby_lines << "RubyDocTest.verbose = true;" if options.include?("--verbose") or options.include?("-v")
 ruby_lines << "RubyDocTest.ignore_interactive = true;" if options.include?("--ignore-interactive")
 
 tests = options.map{ |o| o =~ /^-t(\d+)/; $1 }.compact
@@ -50,29 +58,47 @@ ruby_lines << "RubyDocTest.tests = #{tests.inspect};" if tests.size > 0
 
 requires = requires.map {|lib| "require '#{lib}'; "}.join
 
-def files_runner(command, files, requires, lines, single=false)
+def files_runner(command, files, requires, lines, single)
+  preamble = <<END_CMD
+#{requires} #{lines.join(" ")}
+
+module Kernel
+  # IRB redefines exit
+  alias_method :our_exit, :exit
+end
+
+END_CMD
   if single
-    script = %(#{command} -e "#{requires} #{lines.join(" ")} )
-    files.reverse_each do |f|
-      script << %(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run; )
+    cmd = preamble + "our_exit("
+    cmd << files.reverse.map do |f|
+      %(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run )
+    end.join("&& ")
+    cmd << "? 0 : 1)"
+    if ! system(%(#{command} -e "#{cmd}"))
+      exit(1)
     end
-    script << %(nil")
-    system script
   else
-    files.reverse_each do |f|
-      system %(#{command} -e "#{requires} #{lines.join(" ")} RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run")
+    files.reverse.detect do |f|
+      cmd = preamble + <<END_CMD2
+our_exit(RubyDocTest::Runner.new(File.read('#{f}'), '#{f}').run ? 0 : 1)
+END_CMD2
+
+      if ! system(%(#{command} -e "#{cmd}"))
+        exit(1)
+      end
     end
   end
 end
 
-if options.include?("--plain")
+if options.include?("--plain") or RUBY_PLATFORM =~ /mswin|mingw/
   ruby_lines << "RubyDocTest.output_format = :plain;" 
-  files_runner("ruby", files, requires, ruby_lines, single)
+  files_runner(RUBY, files, requires, ruby_lines, single)
 elsif options.include?("--html")
   ruby_lines << "RubyDocTest.output_format = :html;" 
   puts "<html><body><pre>"
-  files_runner("ruby", files, requires, ruby_lines, single)
+  files_runner(RUBY, files, requires, ruby_lines, single)
   puts "</pre></body></html>"
 else
-  files_runner("ruby", files, requires, ruby_lines, single)
+  files_runner(RUBY, files, requires, ruby_lines, single)
 end
+exit(0)
