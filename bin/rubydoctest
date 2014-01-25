@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rbconfig'
-RUBY = File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name']).sub(/.*\s.*/m, '"\&"')
+RUBY = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name']).sub(/.*\s.*/m, '"\&"')
 
 options, files = ARGV.partition{ |a| a =~ /^-/ }
 
