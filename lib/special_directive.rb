@@ -5,7 +5,7 @@ require 'lines'
 
 module RubyDocTest
   class SpecialDirective < Lines
-    NAMES = ["doctest:", "it:", "!!!", "doctest_require:"]
+    NAMES = ["doctest:", "@doctest", "it:", "!!!", "doctest_require:"]
     NAMES_FOR_RX = NAMES.map{ |n| Regexp.escape(n) }.join("|")
     
     # === Test
@@ -14,6 +14,11 @@ module RubyDocTest
     # >> s = RubyDocTest::SpecialDirective.new(["doctest: Testing Stuff", "Other Stuff"])
     # >> s.name
     # => "doctest:"
+    #
+    # doctest: "@doctest" is a valid directive
+    # >> s = RubyDocTest::SpecialDirective.new(["@doctest is an alias."])
+    # >> s.name
+    # => "@doctest"
     #
     # doctest: "it:" is a valid directive
     # >> s = RubyDocTest::SpecialDirective.new(["it: should test stuff"])

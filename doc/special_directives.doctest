@@ -12,9 +12,13 @@ This directive splits your irb sessions into logical "test units" with descripti
 
 	doctest: This is the first test.  Is this document up to date with the code?
 	>> RubyDocTest::SpecialDirective::NAMES
-	=> ["doctest:", "it:", "!!!", "doctest_require:"]
+	=> ["doctest:", "@doctest", "it:", "!!!", "doctest_require:"]
 
 Any irb sessions appearing before the first doctest: directive will be included in an all-encompassing "Default Test".  If you have no "doctest:" directives anywhere in your document, then all irb statements will be placed in the "Default Test".
+
+For compatibility with YARD, we provide `@doctest`, which is an alias for `doctest:`.
+Note that `@doctest` does not support multi-line test description,
+for compatibility with YARD.
 
 ### The "!!!" Directive
 
