@@ -76,12 +76,16 @@ module RubyDocTest
     # doctest: Indentation can also include the ?> marker
     # >> l.range [">> 1 +", "?> 2"], 0
     # => 0..1
+    #
+    # doctest: Indentation can also include the " |" marker
+    # >> l.range [">> 1 +", " | 2"], 0
+    # => 0..1
     def range(doc_lines = @doc_lines, start_index = @line_index)
       end_index = start_index
       idt = indentation(doc_lines, start_index)
       # Find next lines that are blank, or have indentation more than the first line
       remaining_lines(doc_lines, start_index + 1).each do |current_line|
-        if current_line =~ /^(#{Regexp.escape(idt)}(\s+|\?>\s)|\s*$)/
+        if current_line =~ /^(#{Regexp.escape(idt)}(\s+|(\?>|\|)\s)|\s*$)/
           end_index += 1
         else
           break
@@ -109,7 +113,7 @@ module RubyDocTest
     # => " # "
     def indentation(doc_lines = @doc_lines, line_index = @line_index)
       if doc_lines[line_index]
-        doc_lines[line_index][/^(\s*#\s*|\s*)(\?>\s?)?/]
+        doc_lines[line_index][/^(\s*#\s*|\s*)((\?>|\|)\s?)?/]
       else
         ""
       end
