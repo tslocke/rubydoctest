@@ -42,6 +42,11 @@ module RubyDocTest
     # >> s = RubyDocTest::Statement.new([">> b = 1 +", "?> 1"])
     # >> s.source_code
     # => "b = 1 +\n1"
+    #
+    # doctest: Lines indented by " |" should have the " |" removed.
+    # >> s = RubyDocTest::Statement.new([">> b = 1 +", " | 1"])
+    # >> s.source_code
+    # => "b = 1 +\n1"
     def source_code
       lines.first =~ /^#{Regexp.escape(indentation)}>>\s(.*)$/
       first = [$1]
