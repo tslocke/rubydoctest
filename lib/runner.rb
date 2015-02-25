@@ -34,7 +34,7 @@ module RubyDocTest
     #
     # Modes:
     #   :doctest
-    #     - The the Runner expects the file to contain text (e.g. a markdown file).
+    #     - The Runner expects the file to contain text (e.g. a markdown file).
     #       In addition, it assumes that the text will occasionally be interspersed
     #       with irb lines which it should eval, e.g. '>>' and '=>'.
     #
